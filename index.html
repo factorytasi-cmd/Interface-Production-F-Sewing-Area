@@ -737,7 +737,7 @@ function hideLoading() {
    ABSENSI OPERATOR
 ============================================================ */
 const ABS_GAS_READ_URL  = 'https://script.google.com/macros/s/AKfycbxapd8zinjG9FKoDe0-qnVqHb302zkZeP0oHmrtDKMGhOYtafCpOd0wYyZrnrDUNoE/exec';
-const ABS_GAS_WRITE_URL = 'https://script.google.com/macros/s/AKfycbz2r-ACgSbzAGZctkCr-dLoxo2jiq9965WXenWbzN6Ym6M1TwPjlMv80o7L48qOKX-N/exec';
+const ABS_GAS_WRITE_URL = 'https://script.google.com/macros/s/AKfycbx5fo_27d0xaicSK-3BBGKFkKugmi41x4J05kkbVdBd-iRs6ajzg578HL-I_zByM8A/exec';
 const ABS_MAX_RETRIES = 3, ABS_RETRY_DELAY = 2000, ABS_QUEUE_DELAY = 600;
 const ABS_CACHE_KEY = 'litra_master_db', ABS_CACHE_TTL = 60*60*1000;
 
@@ -1024,7 +1024,7 @@ function absSleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
    OUTPUT PER JAM
 ============================================================ */
 const OPJ_SHEET_ID = '1m_OxSQHVUa7IC6r6e_EXGBFj5NBVq67JPDmAPs8HB5E';
-const OPJ_GAS_URL  = 'https://script.google.com/macros/s/AKfycbz2r-ACgSbzAGZctkCr-dLoxo2jiq9965WXenWbzN6Ym6M1TwPjlMv80o7L48qOKX-N/exec';
+const OPJ_GAS_URL  = 'https://script.google.com/macros/s/AKfycbx5fo_27d0xaicSK-3BBGKFkKugmi41x4J05kkbVdBd-iRs6ajzg578HL-I_zByM8A/exec';
 const OPJ_CACHE_KEY = 'litra_db_v6', OPJ_CACHE_TTL = 60*60*1000;
 
 let opjInited=false, opjAllData=[], opjSelectedLine='', opjSelectedJam=null, opjSpoGroups=[], opjSpoGroupCount=0, opjLineACSetup=false;
