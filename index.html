@@ -2,1717 +2,791 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0A1A1D">
-<title>LITRA-ASI</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LITRA-ASI — Manufacturing Intelligence Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ===== RESET & BASE ===== */
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0A1A1D;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:0 0 40px}
-.phone{width:100%;max-width:420px;background:#0A1A1D}
+  :root{
+    --bg:#0B0C0B; --bg-1:#111310; --surface:#15160F; --surface-2:#1A1C17;
+    --border:#232620; --border-strong:#2A2D26;
+    --text:#F2F2EC; --text-2:#B8BAB2; --text-3:#8A8C82; --text-4:#5C5E58;
+    --amber:#F5A623; --amber-ink:#211802;
+    --red:#F87171; --red-bg:#1A1210; --red-border:#3A211E; --red-soft:#F0B4B1;
+    --orange:#FB923C; --orange-bg:#1D160E; --orange-border:#46311A; --orange-soft:#F5C79E;
+    --yellow:#EAB308; --yellow-bg:#1D1B0E; --yellow-border:#47401A; --yellow-soft:#F5D89E;
+    --green:#4ADE80; --green-bg:#101D14; --green-border:#1E4728; --green-soft:#9EF5BC;
+    --radius:8px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;-webkit-font-smoothing:antialiased}
+  .mono{font-family:'JetBrains Mono',monospace}
+  button{cursor:pointer;font-family:inherit}
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:99px}
 
-/* ===== PAGE SYSTEM ===== */
-.page{display:none}
-.page.active{display:block}
+  /* APP BAR */
+  .appbar{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:var(--bg-1);border-bottom:1px solid var(--border)}
+  .appbar-title{font-size:13px;font-weight:600;color:var(--text-2);letter-spacing:.01em}
+  .appbar-right{display:flex;align-items:center;gap:14px}
+  .live-badge{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-3)}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .icon-btn{background:none;border:1px solid var(--border-strong);color:var(--text-3);border-radius:6px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .icon-btn:hover{color:var(--text);border-color:var(--text-4)}
 
-/* ===== BACK BUTTON ===== */
-.back-bar{background:#0A1A1D;padding:10px 18px 0;display:flex;align-items:center}
-.back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.07);border:.5px solid rgba(255,255,255,0.12);border-radius:99px;padding:7px 14px;font-size:12px;color:rgba(255,255,255,0.6);cursor:pointer;border:none;font-family:inherit;transition:background .15s}
-.back-btn:active{background:rgba(255,255,255,0.12)}
+  /* CHAT HEADER — sengaja dibiarkan terang, tidak ikut tema gelap */
+  .chatbar{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:#FFFFFF;font-family:'Syne',sans-serif;border-bottom:1px solid #e7e5df}
+  .chatbar-left{display:flex;align-items:center;gap:10px}
+  .chatbar-logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#3893D6 0%,#23978D 100%);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
+  .chatbar-name{font-size:14px;font-weight:700;color:#1a1a18;line-height:1.2}
+  .chatbar-tagline{font-size:10px;color:#a08a8a;line-height:1.3}
+  .chatbar-right{display:flex;align-items:center;gap:12px}
+  .pill-toggle{display:flex;align-items:center;gap:5px;font-size:11px;padding:6px 12px;border-radius:99px;background:#f1f0ec;color:#6b6b67;border:none}
+  .pill-toggle.active{background:#dff3ec;color:#1d7a5f}
+  .chat-open-btn{font-size:11px;color:#6b6b67;background:none;border:none;display:flex;align-items:center;gap:3px}
 
-/* ===== SHARED HEADER ===== */
-.header-zone{background:#0A1A1D;padding:16px 22px 28px}
-.status-bar{display:flex;justify-content:space-between;margin-bottom:24px;font-size:11px;color:rgba(255,255,255,0.35);letter-spacing:.5px}
-.logo-wrap{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px}
-.logo-box{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#378ADD,#1D9E75);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:white;flex-shrink:0}
-.logo-text{font-size:26px;font-weight:700;color:white;letter-spacing:1.5px}
-.tagline{text-align:center;font-size:9px;color:#5DCAA5;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
-.subtitle{text-align:center;font-size:10px;color:rgba(255,255,255,0.28);margin-bottom:18px;line-height:1.4}
-.date-pill{display:flex;justify-content:center}
-.date-pill span{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:.5px solid rgba(255,255,255,0.12);border-radius:99px;padding:6px 16px;font-size:11px;color:rgba(255,255,255,0.5)}
-.page-title-bar{background:#0A1A1D;padding:0 22px 20px;text-align:center}
-.page-title-bar h1{font-size:18px;font-weight:700;color:white;letter-spacing:1px}
-.page-divider{width:40px;height:2px;background:linear-gradient(90deg,#378ADD,#1D9E75);border-radius:99px;margin:8px auto 0}
+  .chatroom{background:#FFFFFF;border-bottom:1px solid #e7e5df;font-family:'Sora',sans-serif}
+  .chat-log{max-height:280px;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:10px}
+  .msg-user{align-self:flex-end;background:var(--amber);color:var(--amber-ink);font-size:12px;font-weight:500;padding:8px 12px;border-radius:12px 12px 2px 12px;max-width:75%}
+  .msg-bot{align-self:flex-start;display:flex;gap:8px;max-width:82%}
+  .msg-bot-avatar{width:22px;height:22px;flex-shrink:0;border-radius:50%;background:#eef;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:#3893D6;background:#eaf3fb;font-family:'Syne',sans-serif}
+  .msg-bot-bubble{background:#f6f5f1;color:#33322d;font-size:12px;line-height:1.55;padding:9px 12px;border-radius:2px 12px 12px 12px}
+  .chat-inputrow{display:flex;align-items:center;gap:8px;padding:10px 14px;border-top:1px solid #e7e5df}
+  .chat-input{flex:1;background:#f6f5f1;border:1px solid #e7e5df;border-radius:8px;padding:9px 12px;font-size:12px;font-family:'Sora',sans-serif;color:#1a1a18}
+  .chat-input:focus{outline:none;border-color:#3893D6}
+  .chat-icon-btn{width:32px;height:32px;border-radius:8px;background:#f6f5f1;border:1px solid #e7e5df;display:flex;align-items:center;justify-content:center;color:#6b6b67;flex-shrink:0}
+  .chat-icon-btn.send{background:var(--amber);color:var(--amber-ink);border:none}
+  .chat-icon-btn.listening{background:#fdeaea;color:#c94b4b;border-color:#f3caca}
+  .chat-hint{font-size:10px;color:#a3a199;padding:0 18px 10px}
+  .chat-suggest-row{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 10px}
+  .chat-suggest-chip{font-size:10.5px;padding:6px 11px;border-radius:99px;background:#f6f5f1;border:1px solid #e7e5df;color:#4a4a45;font-family:'Sora',sans-serif}
+  .chat-suggest-chip:hover{background:#efeee9;border-color:#d8d6cf}
 
-/* ===== DASHBOARD ===== */
-.content-zone{background:#F0F2F1;padding:24px 18px}
-.section-lbl{font-size:10px;color:#999;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
-.cards{display:flex;flex-direction:column;gap:14px}
-.card{border-radius:20px;overflow:hidden;text-decoration:none;display:block;cursor:pointer;transition:transform .12s,opacity .12s;-webkit-touch-callout:none;border:none;background:none;width:100%;text-align:left;font-family:inherit}
-.card:active{transform:scale(0.97);opacity:.9}
-.card-absen{background:rgba(230,126,34,0.1);border:.5px solid rgba(230,126,34,0.22) !important}
-.card-opj{background:rgba(29,158,117,0.1);border:.5px solid rgba(29,158,117,0.22) !important}
-.card-issue{background:rgba(55,138,221,0.1);border:.5px solid rgba(55,138,221,0.22) !important}
-.card-inner{padding:20px}
-.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.card-badge{font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:99px}
-.badge-absen{background:rgba(230,126,34,0.15);color:#7D3A0A}
-.badge-opj{background:rgba(29,158,117,0.15);color:#0A5C42}
-.badge-issue{background:rgba(55,138,221,0.15);color:#134E8A}
-.card-icon-wrap{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center}
-.icon-absen{background:rgba(230,126,34,0.15)}
-.icon-opj{background:rgba(29,158,117,0.15)}
-.icon-issue{background:rgba(55,138,221,0.15)}
-.card-title{font-size:22px;font-weight:600;color:#111;margin-bottom:6px;letter-spacing:-.3px}
-.card-desc{font-size:13px;color:#666;line-height:1.5;margin-bottom:18px}
-.card-footer{display:flex;align-items:center;justify-content:space-between}
-.card-hint{font-size:11px;color:#aaa;display:flex;align-items:center;gap:4px}
-.card-btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:99px;font-size:12px;font-weight:500;border:1.5px solid}
-.btn-absen{background:rgba(230,126,34,0.1);color:#7D3A0A;border-color:rgba(230,126,34,0.3)}
-.btn-opj{background:rgba(29,158,117,0.1);color:#0A5C42;border-color:rgba(29,158,117,0.3)}
-.btn-issue{background:rgba(55,138,221,0.1);color:#134E8A;border-color:rgba(55,138,221,0.3)}
+  /* BODY */
+  .app-body{display:flex;min-height:calc(100vh - 140px)}
+  .sidebar{width:76px;flex-shrink:0;border-right:1px solid var(--border);padding:12px 0;background:var(--bg)}
+  .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border-left:2px solid transparent;color:var(--text-3)}
+  .nav-item.active{border-left-color:var(--amber);background:rgba(245,166,35,.08);color:var(--amber)}
+  .nav-item span{font-size:9px;letter-spacing:.03em;font-weight:500}
+  .nav-item svg{width:16px;height:16px}
 
-/* ===== FOOTER ===== */
-.footer-zone{background:#0A1A1D;padding:16px 18px 28px}
-.live-row{display:flex;align-items:center;justify-content:center;gap:8px}
-.live-dot{width:6px;height:6px;border-radius:50%;background:#1D9E75;animation:pulse 2s infinite}
-.live-txt{font-size:11px;color:rgba(255,255,255,0.3)}
+  .main{flex:1;padding:16px 18px;min-width:0}
 
-/* ===== SHARED FORM STYLES ===== */
-.form-content-zone{background:#F0F2F1;padding:20px 18px 28px;margin-top:12px}
-.status-banner{margin:0 18px 12px;border-radius:14px;padding:11px 14px;display:none;align-items:center;gap:10px;font-size:12px;font-weight:500}
-.status-banner.show{display:flex}
-.status-banner.info{background:rgba(55,138,221,0.1);border:.5px solid rgba(55,138,221,0.25);color:#134E8A}
-.status-banner.done{background:rgba(29,158,117,0.1);border:.5px solid rgba(29,158,117,0.25);color:#0A5C42}
-.status-banner.failed{background:rgba(220,53,69,0.08);border:.5px solid rgba(220,53,69,0.25);color:#9B1C1C}
-.status-banner.queued{background:rgba(245,158,11,0.12);border:.5px solid rgba(245,158,11,0.3);color:#78350F}
-.status-banner.sending{background:rgba(55,138,221,0.1);border:.5px solid rgba(55,138,221,0.25);color:#134E8A}
-.banner-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.info .banner-dot,.sending .banner-dot{background:#378ADD;animation:pulse .8s infinite}
-.done .banner-dot{background:#1D9E75}
-.failed .banner-dot{background:#dc3545}
-.queued .banner-dot{background:#F59E0B;animation:pulse 1.5s infinite}
-.form-card{background:white;border-radius:20px;border:.5px solid rgba(0,0,0,0.08);margin-bottom:16px;overflow:visible}
-.form-card-header{background:rgba(29,158,117,0.07);padding:14px 18px;display:flex;align-items:center;gap:8px;border-bottom:.5px solid rgba(29,158,117,0.12);border-radius:20px 20px 0 0}
-.card-step-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#378ADD,#1D9E75);flex-shrink:0}
-.card-title-text{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#0A5C42}
-.form-card-body{padding:18px}
-.field{margin-bottom:14px}
-.field:last-child{margin-bottom:0}
-.field-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#999;margin-bottom:6px;display:flex;align-items:center;gap:5px}
-.field-label i{color:#1D9E75;font-size:13px}
-.field-input{width:100%;padding:11px 14px;border-radius:12px;border:1.5px solid #E5E7E6;font-size:14px;color:#111;background:#FAFAFA;outline:none;transition:border-color .15s,background .15s;font-family:inherit;appearance:none}
-.field-input:focus{border-color:#1D9E75;background:white}
-.field-input:disabled{background:#F0F2F1;color:#aaa;border-color:transparent;cursor:not-allowed}
-.field-input::placeholder{color:#BBB}
-.field-input.readonly{background:#F0F2F1;color:#555;border-color:transparent;cursor:default}
-.field-filled{background:#F0FBF7;border:1.5px solid rgba(29,158,117,0.3);border-radius:12px;padding:11px 14px;font-size:14px;color:#0A5C42;font-weight:500;display:flex;align-items:center;gap:6px;min-height:44px}
-.field-textarea{width:100%;padding:11px 14px;border-radius:12px;border:1.5px solid #E5E7E6;font-size:14px;color:#111;background:#FAFAFA;outline:none;font-family:inherit;resize:none;min-height:90px;line-height:1.5}
-.field-textarea:focus{border-color:#1D9E75;background:white}
-.field-textarea::placeholder{color:#BBB}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ac-wrap{position:relative}
-.ac-drop{position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border-radius:14px;border:1.5px solid #E5E7E6;z-index:9999;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.15);display:none}
-.ac-drop.open{display:block}
-.ac-item{padding:11px 14px;cursor:pointer;font-size:13px;color:#111;border-bottom:.5px solid #F0F2F1;transition:background .1s;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.ac-item:last-child{border-bottom:none}
-.ac-item:hover,.ac-item:active,.ac-item.active{background:#F0FBF7}
-.ac-item mark{background:none;color:#1D9E75;font-weight:700}
-.ac-empty{padding:12px 14px;font-size:13px;color:#999;text-align:center}
-.ac-name{font-weight:500}
-.ac-meta{font-size:11px;color:#999;margin-top:2px}
-.divider{height:.5px;background:#E5E7E6;margin:14px 0}
-.error-msg{font-size:11px;color:#9B1C1C;margin-top:4px;display:none}
-.error-msg.show{display:block}
-.submit-btn{width:100%;padding:16px;border-radius:16px;border:none;background:linear-gradient(135deg,#1D9E75,#378ADD);color:white;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s,transform .1s;letter-spacing:.3px;font-family:inherit;margin-top:4px}
-.submit-btn:active{transform:scale(.98);opacity:.9}
-.submit-btn:disabled{opacity:.45;cursor:not-allowed}
-.btn-secondary{width:100%;padding:13px;border-radius:14px;border:1.5px solid #E5E7E6;background:white;color:#555;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;margin-top:8px}
-.btn-secondary:active{background:#F0F2F1}
-.remove-btn{background:rgba(220,53,69,0.1);border:none;border-radius:8px;color:#dc3545;padding:5px 8px;cursor:pointer;display:flex;align-items:center;gap:4px;font-size:11px;font-weight:500;font-family:inherit}
+  /* TOOLBAR / SUMMARY ROW */
+  .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+  .stat-row{display:flex;gap:8px;flex-wrap:wrap}
+  .stat-chip{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 12px;min-width:92px}
+  .stat-chip-label{font-size:9px;color:var(--text-3);font-weight:500;letter-spacing:.03em;margin-bottom:2px}
+  .stat-chip-value{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500;color:var(--text)}
+  .stat-chip-value.muted{color:var(--text-4);font-size:11px;font-family:'Sora',sans-serif}
+  .btn{font-size:11px;padding:8px 14px;border-radius:6px;font-weight:600;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-2)}
+  .btn:hover{border-color:var(--text-4)}
+  .btn-primary{background:var(--amber);color:var(--amber-ink);border:none}
+  .btn-primary:hover{filter:brightness(1.06)}
+  .btn:disabled{opacity:.5;cursor:default}
 
-/* TOAST */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#111;color:white;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:500;z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;display:flex;align-items:center;gap:8px;max-width:340px}
-.toast.show{transform:translateX(-50%) translateY(0)}
-.toast.success{background:#0A5C42}
-.toast.error{background:#9B1C1C}
-.toast.info{background:#134E8A}
+  /* STATUS GRID */
+  .status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+  @media (max-width:1000px){.status-grid{grid-template-columns:repeat(2,1fr)}}
+  .status-col{border-radius:8px;padding:12px;min-height:170px;max-height:340px;overflow-y:auto}
+  .status-col-title{font-size:12px;font-weight:600;margin-bottom:5px}
+  .status-col-desc{font-size:10px;line-height:1.5;margin-bottom:10px}
+  .status-line-item{border-radius:5px;padding:7px 9px;margin-bottom:5px;font-size:11px}
+  .status-line-code{font-family:'JetBrains Mono',monospace;font-weight:500}
+  .status-line-meta{font-size:10px;opacity:.8;margin-top:2px}
+  .status-empty{font-size:10px;opacity:.55;padding:6px 0}
+  .status-wip-top{font-size:10px;background:rgba(255,255,255,.06);border-radius:4px;padding:5px 8px;margin-bottom:8px}
+  .status-wip-top b{font-family:'JetBrains Mono',monospace;font-weight:500}
+  .status-suggest{margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.08);font-size:10.5px;line-height:1.55;color:inherit;opacity:.95;white-space:pre-line}
+  .status-suggest:empty{display:none}
+  .status-suggest.loading{opacity:.6;font-style:italic}
 
-/* LOADING */
-.loading-overlay{display:none;position:fixed;inset:0;background:rgba(10,26,29,0.75);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:16px}
-.loading-overlay.show{display:flex}
-.spinner{width:40px;height:40px;border:3px solid rgba(29,158,117,0.2);border-top-color:#1D9E75;border-radius:50%;animation:spin .8s linear infinite}
-.loading-text{color:white;font-size:13px;opacity:.7}
+  .col-bigproblem{background:var(--red-bg);border:1px solid var(--red-border)}
+  .col-bigproblem .status-col-title{color:var(--red)}
+  .col-bigproblem .status-col-desc{color:#B8938E}
+  .col-bigproblem .status-line-item{background:#231514;color:var(--red-soft)}
 
-/* ===== ABSENSI SPECIFIC ===== */
-.operator-card{background:white;border-radius:20px;border:.5px solid rgba(0,0,0,0.08);margin-bottom:16px;overflow:visible}
-.operator-card-header{background:rgba(29,158,117,0.07);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:.5px solid rgba(29,158,117,0.12);border-radius:20px 20px 0 0}
-.op-badge{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:rgba(29,158,117,0.15);color:#0A5C42;padding:4px 10px;border-radius:99px}
-.operator-card-body{padding:18px}
-.alasan-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.alasan-btn{padding:10px 12px;border-radius:12px;border:1.5px solid #E5E7E6;background:#FAFAFA;font-size:13px;font-weight:500;color:#555;cursor:pointer;display:flex;align-items:center;gap:6px;justify-content:center;transition:all .15s;font-family:inherit}
-.alasan-btn i{font-size:16px}
-.alasan-btn.sel-sakit{background:rgba(220,53,69,0.08);border-color:rgba(220,53,69,0.4);color:#9B1C1C}
-.alasan-btn.sel-izin{background:rgba(55,138,221,0.08);border-color:rgba(55,138,221,0.4);color:#134E8A}
-.alasan-btn.sel-cuti{background:rgba(29,158,117,0.08);border-color:rgba(29,158,117,0.4);color:#0A5C42}
-.alasan-btn.sel-alfa{background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.4);color:#78350F}
-.add-btn{width:100%;padding:14px;border-radius:16px;border:1.5px dashed rgba(29,158,117,0.4);background:rgba(29,158,117,0.04);color:#0A5C42;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;margin-bottom:14px;font-family:inherit}
-.add-btn:active{background:rgba(29,158,117,0.1);transform:scale(.98)}
-.queue-card{background:white;border-radius:16px;border:.5px solid rgba(0,0,0,0.08);padding:14px 16px;margin-bottom:16px;display:none}
-.queue-card.show{display:block}
-.queue-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#999;margin-bottom:10px}
-.queue-item{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:.5px solid #F5F5F5;font-size:12px}
-.queue-item:last-child{border-bottom:none}
-.qi-name{font-weight:500;color:#111;flex:1}
-.qi-alasan{font-size:11px;color:#888;margin-right:10px}
-.qi-status{font-size:11px;font-weight:600;padding:3px 8px;border-radius:99px;flex-shrink:0}
-.qi-pending{background:rgba(245,158,11,0.12);color:#78350F}
-.qi-sending{background:rgba(55,138,221,0.1);color:#134E8A}
-.qi-ok{background:rgba(29,158,117,0.1);color:#0A5C42}
-.qi-fail{background:rgba(220,53,69,0.08);color:#9B1C1C}
-.retry-btn{width:100%;padding:11px;border-radius:12px;border:1.5px solid rgba(220,53,69,0.3);background:rgba(220,53,69,0.06);color:#9B1C1C;font-size:13px;font-weight:500;cursor:pointer;display:none;align-items:center;justify-content:center;gap:6px;margin-top:10px;font-family:inherit}
-.retry-btn.show{display:flex}
+  .col-urgent{background:var(--orange-bg);border:1px solid var(--orange-border)}
+  .col-urgent .status-col-title{color:var(--orange)}
+  .col-urgent .status-col-desc{color:#C2A587}
+  .col-urgent .status-line-item{background:#291D10;color:var(--orange-soft)}
 
-/* ===== OUTPUT PER JAM SPECIFIC ===== */
-.jam-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.jam-btn{padding:9px 4px;border-radius:12px;border:1.5px solid #E5E7E6;background:#FAFAFA;font-size:13px;font-weight:600;color:#555;cursor:pointer;text-align:center;transition:all .15s;user-select:none;font-family:inherit}
-.jam-btn:hover{border-color:#1D9E75;color:#0A5C42;background:#F0FBF7}
-.jam-btn.selected{background:linear-gradient(135deg,#378ADD,#1D9E75);color:white;border-color:transparent}
-.chip-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.chip{padding:12px 8px;border-radius:12px;border:1.5px solid #E5E7E6;background:#FAFAFA;text-align:center;cursor:pointer;transition:all .15s;user-select:none}
-.chip-icon{font-size:20px;margin-bottom:3px}
-.chip-label{font-size:12px;font-weight:700;color:#555;display:block}
-.chip-sub{font-size:10px;color:#999;display:block;margin-top:1px}
-.chip:hover{border-color:#1D9E75;background:#F0FBF7}
-.chip:hover .chip-label{color:#0A5C42}
-.chip.selected{background:rgba(29,158,117,0.08);border-color:rgba(29,158,117,0.4)}
-.chip.selected .chip-label{color:#0A5C42}
-.number-wrap{position:relative}
-.number-input{width:100%;padding:11px 44px 11px 14px;border-radius:12px;border:1.5px solid #E5E7E6;font-size:20px;font-weight:700;color:#0A5C42;background:#FAFAFA;outline:none;transition:border-color .15s;font-family:inherit;-moz-appearance:textfield}
-.number-input::-webkit-inner-spin-button,.number-input::-webkit-outer-spin-button{-webkit-appearance:none}
-.number-input:focus{border-color:#1D9E75;background:white}
-.unit-label{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:#999;pointer-events:none}
-.extra-entry{background:#F0FBF7;border:.5px solid rgba(29,158,117,0.2);border-radius:14px;padding:14px;margin-top:10px}
-.extra-entry-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.extra-entry-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0A5C42}
-.add-size-btn{width:100%;padding:13px;border-radius:14px;border:1.5px dashed rgba(29,158,117,0.4);background:rgba(29,158,117,0.04);color:#0A5C42;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;margin-top:10px;font-family:inherit}
-.add-size-btn:active{background:rgba(29,158,117,0.1);transform:scale(.98)}
-.add-spo-btn{width:100%;padding:14px;border-radius:14px;border:1.5px dashed rgba(55,138,221,0.5);background:rgba(55,138,221,0.05);color:#134E8A;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;margin-bottom:12px;font-family:inherit}
-.add-spo-btn:active{background:rgba(55,138,221,0.12);transform:scale(.98)}
-.preview-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:.5px solid #F0F2F1;font-size:12px}
-.preview-row:last-child{border-bottom:none}
-.preview-key{color:#999}
-.preview-val{font-weight:600;color:#111;text-align:right;max-width:60%}
+  .col-prioritas{background:var(--yellow-bg);border:1px solid var(--yellow-border)}
+  .col-prioritas .status-col-title{color:var(--yellow)}
+  .col-prioritas .status-col-desc{color:#C2BC87}
+  .col-prioritas .status-line-item{background:#292410;color:var(--yellow-soft)}
 
-/* ===== DAILY ISSUE SPECIFIC ===== */
-.section-divider{display:flex;align-items:center;gap:8px;margin:4px 0 12px}
-.section-divider span{font-size:11px;color:#aaa;white-space:nowrap}
-.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:#E5E7E6}
-.rec-center{display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 0}
-.rec-ring{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:rgba(29,158,117,0.1);transition:transform .1s;position:relative}
-.rec-ring.recording{background:#dc3545;animation:recpulse 1.4s infinite}
-.rec-ring.done{background:rgba(29,158,117,0.15)}
-.rec-ring:active{transform:scale(.95)}
-.rec-icon{font-size:30px}
-.rec-timer{font-size:26px;font-weight:300;color:#111;font-variant-numeric:tabular-nums;letter-spacing:.05em}
-.rec-status{font-size:12px;color:#999;text-align:center}
-.wave{display:flex;align-items:center;gap:3px;height:28px}
-.wave-bar{width:3px;border-radius:2px;background:#1D9E75;height:4px;transition:height .07s}
-.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
-.photo-slot{aspect-ratio:1;border-radius:12px;border:1.5px dashed #D0D0D0;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#FAFAFA;overflow:hidden;position:relative;transition:border-color .15s}
-.photo-slot:hover{border-color:#1D9E75}
-.photo-slot.filled{border:none}
-.photo-slot img{width:100%;height:100%;object-fit:cover;border-radius:10px}
-.photo-slot .add-icon{font-size:24px;color:#CCC;margin-bottom:4px}
-.photo-slot .add-txt{font-size:10px;color:#BBB;text-align:center;letter-spacing:.3px}
-.photo-remove{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.55);border:none;color:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
-.photo-count{font-size:11px;color:#999;margin-top:6px;text-align:right}
-.confirm-overlay{display:none;position:fixed;inset:0;background:rgba(10,26,29,0.7);z-index:600;align-items:flex-end;justify-content:center}
-.confirm-overlay.show{display:flex}
-.confirm-sheet{background:white;border-radius:24px 24px 0 0;padding:24px 20px 36px;width:100%;max-width:420px}
-.confirm-sheet h3{font-size:16px;font-weight:700;color:#111;margin-bottom:8px;text-align:center}
-.confirm-sheet p{font-size:13px;color:#666;text-align:center;line-height:1.5;margin-bottom:20px}
-.confirm-btns{display:flex;gap:10px}
-.confirm-cancel{flex:1;padding:13px;border-radius:14px;border:1.5px solid #E5E7E6;background:white;color:#555;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit}
-.confirm-ok{flex:1;padding:13px;border-radius:14px;border:none;background:linear-gradient(135deg,#1D9E75,#378ADD);color:white;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
-.cfg-field{margin-bottom:10px}
-.cfg-field label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#999;margin-bottom:6px;display:block}
-.cfg-field input{width:100%;padding:11px 14px;border-radius:12px;border:1.5px solid #E5E7E6;font-size:13px;color:#111;background:#FAFAFA;outline:none;font-family:inherit}
-.cfg-field input:focus{border-color:#1D9E75;background:white}
-.empty-state{text-align:center;padding:20px;color:#aaa;font-size:13px}
-audio{width:100%;margin-top:10px;border-radius:10px}
-.preview-wrap{overflow-x:auto;border-radius:12px;border:1px solid #E5E7E6}
-table{width:100%;border-collapse:collapse;font-size:12px;min-width:580px}
-th{background:#F0F2F1;padding:8px 10px;text-align:left;font-weight:600;color:#666;white-space:nowrap;border-bottom:1px solid #E5E7E6}
-td{padding:8px 10px;border-bottom:.5px solid #F0F2F1;color:#111;vertical-align:top}
-tr:last-child td{border-bottom:none}
-.badge-kategori{background:rgba(29,158,117,0.1);color:#0A5C42;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
-.ac-spo{font-weight:700;color:#111;white-space:nowrap}
-.ac-style{font-size:11px;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%}
-#di-extra-sizes-section{display:none}
-#di-extra-sizes-section.visible{display:block}
+  .col-apreciate{background:var(--green-bg);border:1px solid var(--green-border)}
+  .col-apreciate .status-col-title{color:var(--green)}
+  .col-apreciate .status-col-desc{color:#8FC2A0}
+  .col-apreciate .status-line-item{background:#102916;color:var(--green-soft)}
 
-/* ===== ANIMATIONS ===== */
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes recpulse{0%,100%{box-shadow:0 0 0 0 rgba(220,53,69,0.4)}50%{box-shadow:0 0 0 14px rgba(220,53,69,0)}}
+  /* MONITOR GRID */
+  .monitor-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  @media (max-width:1000px){.monitor-grid{grid-template-columns:repeat(2,1fr)}}
+  .monitor-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px}
+  .monitor-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .monitor-body{font-size:10.5px;color:var(--text-3);line-height:1.55}
+  .monitor-body.empty{color:var(--text-4)}
+  .monitor-sub{border-top:1px solid var(--border);margin-top:8px;padding-top:8px}
+  .pill-soon{font-size:9px;padding:1px 7px;border-radius:99px;background:var(--surface-2);color:var(--text-4);border:1px solid var(--border-strong)}
+  .style-change-item{background:var(--surface-2);border-radius:5px;padding:6px 8px;margin-bottom:5px;font-size:10.5px;color:var(--text-2)}
+  .style-change-item b{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:500}
+  .monitor-suggest{margin-top:9px;padding-top:9px;border-top:1px solid var(--border);font-size:10.5px;line-height:1.55;color:var(--text-2);white-space:pre-line}
+  .monitor-suggest:empty{display:none}
+  .monitor-suggest.loading{opacity:.6;font-style:italic}
 
-/* ===== RESPONSIVE ===== */
-@media(max-width:420px){
-  body{padding:0;align-items:flex-start}
-  .phone{border-radius:0;min-height:100vh;border:none}
-  .header-zone{padding-top:env(safe-area-inset-top,20px)}
-  .footer-zone{padding-bottom:env(safe-area-inset-bottom,28px)}
-}
+  /* SUGGEST PANEL */
+
+
+  /* CONFIG PANEL */
+  .config-panel{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 18px;display:none}
+  .config-panel.open{display:block}
+  .config-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .config-item{display:flex;flex-direction:column;gap:3px}
+  .config-label{font-size:9px;color:var(--text-3);font-weight:500}
+  .config-input{font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 9px;border-radius:5px;border:1px solid var(--border-strong);background:var(--bg-1);color:var(--text)}
+
+  .footer{padding:8px 18px;background:var(--bg-1);border-top:1px solid var(--border);font-size:9px;color:var(--text-4);font-family:'JetBrains Mono',monospace;display:flex;justify-content:space-between}
+
+  .loading-line{font-size:11px;color:var(--text-3);padding:20px;text-align:center}
+  .err-box{font-size:11px;color:var(--red);background:var(--red-bg);border:1px solid var(--red-border);border-radius:6px;padding:10px 12px;margin-bottom:10px}
 </style>
 </head>
 <body>
-<div class="phone">
 
-<!-- ================================================ -->
-<!-- PAGE: DASHBOARD -->
-<!-- ================================================ -->
-<div id="page-dashboard" class="page active">
-  <div class="header-zone">
-    <div class="status-bar">
-      <span>PT. ASI</span>
-      <span id="dash-waktu">--:--</span>
+<div class="appbar">
+  <div class="appbar-title">Industrial Manufacturing Intelligence Dashboard</div>
+  <div class="appbar-right">
+    <div class="live-badge"><div class="live-dot"></div><span id="lastUpdate">Belum ada data</span></div>
+    <button class="icon-btn" id="cfgToggle" onclick="toggleCfg()" title="Konfigurasi">&#9881;</button>
+    <button class="icon-btn" id="fsBtn" onclick="toggleFullscreen()" title="Fullscreen">&#9974;</button>
+    <span class="mono" id="dateNow" style="font-size:11px;color:var(--text-3)"></span>
+  </div>
+</div>
+
+<div class="config-panel" id="cfgPanel">
+  <div class="config-grid">
+    <div class="config-item"><label class="config-label">Sheet ID — Efisiensi &amp; Repair</label><input class="config-input" id="c-eff" value="1s7fBhVdlNwjRGqAObW1-P7Dk7ZBBG1dBrbMkJrh4EBk"></div>
+    <div class="config-item"><label class="config-label">Sheet ID — Planning</label><input class="config-input" id="c-plan" value="1JrhmIBoiYUUHcDHIAchUD9gY-eBs6pkwuky4e63509s"></div>
+    <div class="config-item"><label class="config-label">Nama Sheet Efisiensi</label><input class="config-input" id="c-es" value="Efisiensi Line New"></div>
+    <div class="config-item"><label class="config-label">Nama Sheet Repair</label><input class="config-input" id="c-rs" value="Repair Line New"></div>
+    <div class="config-item"><label class="config-label">Nama Sheet Output Per Jam</label><input class="config-input" id="c-opj" value="Output (Line) Per Jam New"></div>
+    <div class="config-item"><label class="config-label">Nama Sheet Planning</label><input class="config-input" id="c-ps" value="Planning 2026 (Masa Depan)"></div>
+    <div class="config-item"><label class="config-label">Sheet ID — Kapasitas Operator</label><input class="config-input" id="c-opid" value="1W7MMl-PWRoi1aQiTOHGrDY84GUVcbnYgDKzWS-YGzNs"></div>
+    <div class="config-item"><label class="config-label">Nama Sheet Operator</label><input class="config-input" id="c-opsh" value="KAPASITAS OPERATOR"></div>
+    <div class="config-item"><label class="config-label">Nama Sheet WIP</label><input class="config-input" id="c-wip" value="WIP SEW Per Line New"></div>
+  </div>
+  <div style="margin-top:10px"><button class="btn btn-primary" onclick="loadAll()">Ambil Data</button></div>
+</div>
+
+<div class="chatbar" onclick="toggleChat()" style="cursor:pointer">
+  <div class="chatbar-left">
+    <div class="chatbar-logo">L</div>
+    <div>
+      <div class="chatbar-name">LITRA-ASI</div>
+      <div class="chatbar-tagline">Lean Intelligence Tracking &amp; Realtime Analytics - ASI</div>
     </div>
-    <div class="logo-wrap">
-      <div class="logo-box">L</div>
-      <div class="logo-text">LITRA-ASI</div>
+  </div>
+  <div class="chatbar-right">
+    <button class="pill-toggle" id="voiceToggle" onclick="event.stopPropagation();toggleVoice()">
+      <span id="voiceIcon">&#128263;</span><span id="voiceLabel">Suara Off</span>
+    </button>
+    <button class="chat-open-btn" id="chatOpenLabel">Buka &#9662;</button>
+  </div>
+</div>
+
+<div class="chatroom" id="chatRoom" style="display:none">
+  <div class="chat-log" id="chatLog">
+    <div class="msg-bot">
+      <div class="msg-bot-avatar">L</div>
+      <div class="msg-bot-bubble">Tanya kondisi line, efisiensi, repair, atau operator hari ini. Jawaban langsung dari data terbaru.</div>
     </div>
-    <div class="tagline">Leading Industrial Transformation</div>
-    <div class="subtitle">Lean Intelligence Tracking &amp; Realtime Analytics — ASI</div>
-    <div class="date-pill">
-      <span><i class="ti ti-calendar" style="font-size:13px"></i><span id="dash-tgl">Memuat...</span></span>
+  </div>
+  <div class="chat-suggest-row" id="chatSuggestRow">
+    <button class="chat-suggest-chip" onclick="askSuggested('Bagaimana performa line F14?')">Bagaimana performa line F14?</button>
+    <button class="chat-suggest-chip" onclick="askSuggested('SPV mana yang perlu bantuan?')">SPV mana yang perlu bantuan?</button>
+    <button class="chat-suggest-chip" onclick="askSuggested('SPO-SPO yang harus segera selesai?')">SPO-SPO yang harus segera selesai?</button>
+  </div>
+  <div class="chat-inputrow">
+    <input type="text" class="chat-input" id="chatInput" placeholder="Tulis pertanyaan..." onkeydown="if(event.key==='Enter')sendChat()">
+    <button class="chat-icon-btn" id="micBtn" onclick="toggleMic()" title="Mic" aria-label="Mic">&#127908;</button>
+    <button class="chat-icon-btn send" onclick="sendChat()" title="Kirim" aria-label="Kirim">&#10148;</button>
+  </div>
+  <div class="chat-hint">One-shot Q&amp;A — tiap pertanyaan dijawab berdiri sendiri, tanpa mengingat percakapan sebelumnya.</div>
+</div>
+
+<div class="app-body">
+  <div class="sidebar">
+    <div class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+      <span>Daily</span>
     </div>
   </div>
 
-  <div style="text-align:center;margin-top:4px;background:#0A1A1D;padding-bottom:8px">
-    <div style="font-size:22px;font-weight:700;color:white;letter-spacing:3px;text-transform:uppercase;line-height:1.2">SEWING AREA</div>
-    <div style="width:40px;height:2px;background:linear-gradient(90deg,#378ADD,#1D9E75);border-radius:99px;margin:8px auto 0"></div>
-  </div>
-
-  <div class="content-zone">
-    <div class="section-lbl">Input Data Produksi</div>
-    <div class="cards">
-
-      <button class="card card-absen" onclick="showPage('absensi')">
-        <div class="card-inner">
-          <div class="card-top">
-            <span class="card-badge badge-absen">Harian</span>
-            <div class="card-icon-wrap icon-absen">
-              <i class="ti ti-users" style="font-size:20px;color:#E67E22"></i>
-            </div>
-          </div>
-          <div class="card-title">Absensi Operator</div>
-          <div class="card-desc">Catat kehadiran operator sewing setiap hari per line produksi</div>
-          <div class="card-footer">
-            <span class="card-hint"><i class="ti ti-user-check" style="font-size:13px"></i>Input tiap hari</span>
-            <span class="card-btn btn-absen">Buka <i class="ti ti-arrow-right" style="font-size:14px"></i></span>
-          </div>
-        </div>
-      </button>
-
-      <button class="card card-opj" onclick="showPage('output')">
-        <div class="card-inner">
-          <div class="card-top">
-            <span class="card-badge badge-opj">Per Jam</span>
-            <div class="card-icon-wrap icon-opj">
-              <i class="ti ti-chart-bar" style="font-size:20px;color:#1D9E75"></i>
-            </div>
-          </div>
-          <div class="card-title">Output Per Jam</div>
-          <div class="card-desc">Catat aktual output produksi setiap jam untuk semua line sewing</div>
-          <div class="card-footer">
-            <span class="card-hint"><i class="ti ti-clock" style="font-size:13px"></i>Input tiap jam</span>
-            <span class="card-btn btn-opj">Buka <i class="ti ti-arrow-right" style="font-size:14px"></i></span>
-          </div>
-        </div>
-      </button>
-
-      <button class="card card-issue" onclick="showPage('issue')">
-        <div class="card-inner">
-          <div class="card-top">
-            <span class="card-badge badge-issue">Harian</span>
-            <div class="card-icon-wrap icon-issue">
-              <i class="ti ti-alert-triangle" style="font-size:20px;color:#378ADD"></i>
-            </div>
-          </div>
-          <div class="card-title">Daily Issue</div>
-          <div class="card-desc">Rekam kendala dan issue dari leader line produksi setiap shift</div>
-          <div class="card-footer">
-            <span class="card-hint"><i class="ti ti-file-description" style="font-size:13px"></i>Input tiap shift</span>
-            <span class="card-btn btn-issue">Buka <i class="ti ti-arrow-right" style="font-size:14px"></i></span>
-          </div>
-        </div>
-      </button>
-
-    </div>
-  </div>
-
-  <div class="footer-zone">
-    <div class="live-row">
-      <div class="live-dot"></div>
-      <div class="live-txt">Sistem aktif — PT. ASI Sewing Division</div>
+  <div class="main">
+    <div id="mainContent">
+      <div class="loading-line">Klik "Ambil Data" di panel konfigurasi (&#9881;) untuk mulai.</div>
     </div>
   </div>
 </div>
 
-
-<!-- ================================================ -->
-<!-- PAGE: ABSENSI OPERATOR -->
-<!-- ================================================ -->
-<div id="page-absensi" class="page">
-  <div class="back-bar">
-    <button class="back-btn" onclick="showPage('dashboard')">
-      <i class="ti ti-arrow-left" style="font-size:14px"></i> Kembali
-    </button>
-  </div>
-  <div class="header-zone" style="padding-top:12px;padding-bottom:18px">
-    <div class="status-bar">
-      <span>PT. ASI</span>
-      <span id="abs-waktu">--:--</span>
-    </div>
-    <div class="logo-wrap">
-      <div class="logo-box">L</div>
-      <div class="logo-text">LITRA-ASI</div>
-    </div>
-    <div class="tagline">Leading Industrial Transformation</div>
-    <div class="subtitle">Lean Intelligence Tracking &amp; Realtime Analytics — ASI</div>
-    <div class="date-pill">
-      <span><i class="ti ti-calendar" style="font-size:13px"></i><span id="abs-tgl">Memuat...</span></span>
-    </div>
-  </div>
-  <div class="page-title-bar">
-    <h1>ABSENSI OPERATOR</h1>
-    <div class="page-divider"></div>
-  </div>
-  <div class="status-banner" id="abs-status-banner">
-    <div class="banner-dot"></div>
-    <span id="abs-banner-text"></span>
-  </div>
-  <div class="form-content-zone">
-    <div class="section-lbl"><i class="ti ti-users" style="font-size:12px;vertical-align:-1px"></i> Input Operator Tidak Masuk</div>
-    <div class="queue-card" id="abs-queue-card">
-      <div class="queue-title"><i class="ti ti-list-check" style="font-size:12px;vertical-align:-1px"></i> Status Pengiriman</div>
-      <div id="abs-queue-list"></div>
-      <button class="retry-btn" id="abs-retry-btn" onclick="absRetryFailed()">
-        <i class="ti ti-refresh"></i> Kirim ulang yang gagal
-      </button>
-    </div>
-    <div id="abs-operators-container"></div>
-    <button class="add-btn" id="abs-add-btn" onclick="absAddOperator()">
-      <i class="ti ti-plus" style="font-size:18px"></i> Ada operator lain?
-    </button>
-    <button class="submit-btn" id="abs-submit-btn" onclick="absSubmitAll()">
-      <i class="ti ti-send" style="font-size:18px"></i> Kirim Data Absensi
-    </button>
-  </div>
-  <div class="footer-zone">
-    <div class="live-row">
-      <div class="live-dot"></div>
-      <div class="live-txt">Sistem aktif — PT. ASI Sewing Division</div>
-    </div>
-  </div>
+<div class="footer">
+  <span>LITRA-ASI &middot; PT. ASI &middot; Divisi Sewing</span>
+  <span id="footerRows"></span>
 </div>
-
-
-<!-- ================================================ -->
-<!-- PAGE: OUTPUT PER JAM -->
-<!-- ================================================ -->
-<div id="page-output" class="page">
-  <div class="back-bar">
-    <button class="back-btn" onclick="showPage('dashboard')">
-      <i class="ti ti-arrow-left" style="font-size:14px"></i> Kembali
-    </button>
-  </div>
-  <div class="header-zone" style="padding-top:12px;padding-bottom:18px">
-    <div class="status-bar">
-      <span>PT. ASI</span>
-      <span id="opj-waktu">--:--</span>
-    </div>
-    <div class="logo-wrap">
-      <div class="logo-box">L</div>
-      <div class="logo-text">LITRA-ASI</div>
-    </div>
-    <div class="tagline">Leading Industrial Transformation</div>
-    <div class="subtitle">Lean Intelligence Tracking &amp; Realtime Analytics — ASI</div>
-    <div class="date-pill">
-      <span><i class="ti ti-calendar" style="font-size:13px"></i><span id="opj-tgl">Memuat...</span></span>
-    </div>
-  </div>
-  <div class="page-title-bar">
-    <h1>OUTPUT PRODUKSI</h1>
-    <div class="page-divider"></div>
-  </div>
-  <div class="status-banner" id="opj-status-banner">
-    <div class="banner-dot"></div>
-    <span id="opj-banner-text"></span>
-  </div>
-  <div class="form-content-zone">
-    <div class="section-lbl"><i class="ti ti-clipboard-data" style="font-size:12px;vertical-align:-1px"></i> Input Output Per Jam</div>
-    <div class="form-card">
-      <div class="form-card-header">
-        <div class="card-step-dot"></div>
-        <span class="card-title-text">Line Produksi</span>
-      </div>
-      <div class="form-card-body">
-        <div class="field" style="margin-bottom:0">
-          <div class="field-label"><i class="ti ti-layout-rows"></i>Line</div>
-          <div class="ac-wrap">
-            <input type="text" id="opj-line-input" class="field-input" placeholder="Ketik nama line..." autocomplete="off" />
-            <div class="ac-drop" id="opj-line-dropdown"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="form-card" id="opj-main-input-card">
-      <div class="form-card-header">
-        <div class="card-step-dot"></div>
-        <span class="card-title-text">Input Output</span>
-      </div>
-      <div class="form-card-body" id="opj-main-input-body" style="padding-bottom:20px">
-        <div id="opj-spo-groups-container"></div>
-        <button class="add-spo-btn" id="opj-add-spo-btn" onclick="opjAddSPOGroup()" style="margin-top:8px">
-          <i class="ti ti-plus" style="font-size:16px"></i> Tambah SPO
-        </button>
-        <div class="divider"></div>
-        <div class="field-label" style="margin-bottom:8px"><i class="ti ti-clock"></i> Jam Ke-</div>
-        <div class="jam-grid" id="opj-jam-grid"></div>
-        <div class="error-msg" id="opj-jam-error">Pilih jam terlebih dahulu.</div>
-      </div>
-    </div>
-    <div class="form-card" id="opj-preview-card" style="display:none">
-      <div class="form-card-header">
-        <div class="card-step-dot"></div>
-        <span class="card-title-text">Ringkasan</span>
-      </div>
-      <div class="form-card-body">
-        <div id="opj-preview-content"></div>
-      </div>
-    </div>
-    <button class="submit-btn" id="opj-submit-btn" onclick="opjSubmitData()">
-      <i class="ti ti-send" style="font-size:18px"></i> Kirim Data Output
-    </button>
-  </div>
-  <div class="footer-zone">
-    <div class="live-row">
-      <div class="live-dot"></div>
-      <div class="live-txt">Sistem aktif — PT. ASI Sewing Division</div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ================================================ -->
-<!-- PAGE: DAILY ISSUE -->
-<!-- ================================================ -->
-<div id="page-issue" class="page">
-  <div class="back-bar">
-    <button class="back-btn" onclick="showPage('dashboard')">
-      <i class="ti ti-arrow-left" style="font-size:14px"></i> Kembali
-    </button>
-  </div>
-  <div class="header-zone" style="padding-top:12px;padding-bottom:18px">
-    <div class="status-bar">
-      <span>PT. ASI</span>
-      <span id="di-waktu">--:--</span>
-    </div>
-    <div class="logo-wrap">
-      <div class="logo-box">L</div>
-      <div class="logo-text">LITRA-ASI</div>
-    </div>
-    <div class="tagline">Leading Industrial Transformation</div>
-    <div class="subtitle">Lean Intelligence Tracking &amp; Realtime Analytics — ASI</div>
-    <div class="date-pill">
-      <span><i class="ti ti-calendar" style="font-size:13px"></i><span id="di-tgl">Memuat...</span></span>
-    </div>
-  </div>
-  <div class="page-title-bar">
-    <h1>DAILY ISSUE PRODUKSI</h1>
-    <div class="page-divider"></div>
-  </div>
-  <div class="status-banner" id="di-status-banner">
-    <div class="banner-dot"></div>
-    <span id="di-banner-text"></span>
-  </div>
-  <div class="form-content-zone">
-    <div class="section-lbl"><i class="ti ti-alert-triangle" style="font-size:12px;vertical-align:-1px"></i> Input Issue Produksi</div>
-
-    <div class="form-card" id="di-cfg-card">
-      <div class="form-card-header">
-        <div class="card-step-dot"></div>
-        <span class="card-title-text">⚙️ Konfigurasi</span>
-      </div>
-      <div class="form-card-body">
-        <div class="cfg-field">
-          <label>Anthropic API Key</label>
-          <input type="password" id="di-cfg-apikey" placeholder="sk-ant-api03-..." />
-        </div>
-        <div class="cfg-field">
-          <label>Google Apps Script URL</label>
-          <input type="text" id="di-cfg-gasurl" placeholder="https://script.google.com/macros/s/..." />
-        </div>
-        <p style="font-size:11px;color:#aaa;margin-top:6px">Isi sekali, tersimpan di perangkat ini.</p>
-      </div>
-    </div>
-
-    <div class="form-card">
-      <div class="form-card-header">
-        <div class="card-step-dot"></div>
-        <span class="card-title-text">SPO &amp; Style</span>
-      </div>
-      <div class="form-card-body">
-        <div class="field">
-          <div class="field-label"><i class="ti ti-file-text"></i>SPO / Order</div>
-          <div class="ac-wrap">
-            <input type="text" id="di-spo-input" class="field-input" placeholder="Ketik nomor SPO..." autocomplete="off" />
-            <div class="ac-drop" id="di-spo-dropdown"></div>
-          </div>
-        </div>
-        <div class="field">
-          <div class="field-label"><i class="ti ti-tag"></i>Style</div>
-          <div class="field-filled" id="di-style-display">
-            <i class="ti ti-info-circle" style="color:#999;font-size:14px"></i>
-            <span id="di-style-text" style="color:#999;font-style:italic;font-size:13px">Terisi otomatis saat SPO dipilih</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-card">
-      <div class="form-card-header">
-        <div class="card-step-dot"></div>
-        <span class="card-title-text">🎙️ Rekam Audio</span>
-      </div>
-      <div class="form-card-body">
-        <div class="rec-center">
-          <div class="wave" id="di-wave">
-            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-          </div>
-          <div class="rec-timer" id="di-timer">00:00</div>
-          <button class="rec-ring" id="di-rec-btn" onclick="diToggleRecord()">
-            <span class="rec-icon" id="di-rec-icon">🎙️</span>
-          </button>
-          <div class="rec-status" id="di-rec-status">Tekan untuk mulai merekam</div>
-        </div>
-        <audio id="di-audio-player" controls style="display:none"></audio>
-        <div class="section-divider" style="margin-top:14px"><span>Transkripsi</span></div>
-        <textarea class="field-textarea" id="di-transkrip" placeholder='Hasil transkripsi muncul di sini, atau ketik manual.'></textarea>
-        <div id="di-status-bar" style="font-size:12px;color:#999;min-height:22px;margin-top:8px;display:flex;align-items:center;gap:6px"></div>
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn-secondary" style="margin-top:0" onclick="diClearAll()">
-            <i class="ti ti-trash" style="font-size:15px"></i> Bersihkan
-          </button>
-          <button class="submit-btn" style="margin-top:0" onclick="diParseWithAI()" id="di-btn-parse">
-            <i class="ti ti-robot" style="font-size:16px"></i> Parsing AI
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-card" id="di-preview-card" style="display:none">
-      <div class="form-card-header">
-        <div class="card-step-dot"></div>
-        <span class="card-title-text">📋 Preview Data</span>
-      </div>
-      <div class="form-card-body">
-        <div id="di-preview-area"><div class="empty-state">Belum ada data.</div></div>
-      </div>
-    </div>
-
-    <div class="form-card">
-      <div class="form-card-header">
-        <div class="card-step-dot"></div>
-        <span class="card-title-text">📷 Foto Pendukung</span>
-      </div>
-      <div class="form-card-body">
-        <div class="field-label" style="margin-bottom:10px"><i class="ti ti-camera"></i>Upload Foto (Maks. 3 foto)</div>
-        <div class="photo-grid">
-          <div class="photo-slot" id="di-slot-0" onclick="diTriggerPhoto(0)"><div class="add-icon">＋</div><div class="add-txt">Foto 1</div></div>
-          <div class="photo-slot" id="di-slot-1" onclick="diTriggerPhoto(1)"><div class="add-icon">＋</div><div class="add-txt">Foto 2</div></div>
-          <div class="photo-slot" id="di-slot-2" onclick="diTriggerPhoto(2)"><div class="add-icon">＋</div><div class="add-txt">Foto 3</div></div>
-        </div>
-        <div class="photo-btn-row" id="di-photo-btn-row" style="display:none;gap:8px;margin-top:10px">
-          <button class="btn-secondary" style="margin-top:0;flex:1" onclick="diTriggerCamera()"><i class="ti ti-camera" style="font-size:15px"></i> Kamera</button>
-          <button class="btn-secondary" style="margin-top:0;flex:1" onclick="diTriggerGallery()"><i class="ti ti-photo" style="font-size:15px"></i> Galeri</button>
-          <button class="btn-secondary" style="margin-top:0;flex:none;padding:13px 14px" onclick="diTutupSlotPicker()"><i class="ti ti-x" style="font-size:15px"></i></button>
-        </div>
-        <div class="photo-count" id="di-photo-count">0 / 3 foto</div>
-        <input type="file" id="di-photo-camera" accept="image/*" capture="environment" style="display:none" onchange="diOnPhotoSelected(event)">
-        <input type="file" id="di-photo-gallery" accept="image/*" style="display:none" onchange="diOnPhotoSelected(event)">
-      </div>
-    </div>
-
-    <div class="confirm-overlay" id="di-confirm-overlay">
-      <div class="confirm-sheet">
-        <h3>⚠️ Tidak Ada Foto</h3>
-        <p>Tidak ada foto yang dilampirkan.<br>Lanjutkan kirim laporan tanpa foto?</p>
-        <div class="confirm-btns">
-          <button class="confirm-cancel" onclick="diTutupKonfirmasi()">Batal</button>
-          <button class="confirm-ok" onclick="diLanjutKirimTanpaFoto()">Ya, Kirim Tanpa Foto</button>
-        </div>
-      </div>
-    </div>
-
-    <button class="submit-btn" id="di-btn-kirim" onclick="diKirimKeSheet()" disabled>
-      <i class="ti ti-send" style="font-size:18px"></i> Kirim ke Google Sheet
-    </button>
-  </div>
-
-  <div class="footer-zone">
-    <div class="live-row">
-      <div class="live-dot"></div>
-      <div class="live-txt">Sistem aktif — PT. ASI Production Division</div>
-    </div>
-  </div>
-</div>
-
-</div><!-- end .phone -->
-
-<!-- GLOBAL LOADING & TOAST -->
-<div class="loading-overlay" id="global-loading">
-  <div class="spinner"></div>
-  <div class="loading-text" id="global-loading-text">Memuat data...</div>
-</div>
-<div class="toast" id="global-toast"></div>
 
 <script>
-/* ============================================================
-   NAVIGATION
-============================================================ */
-function showPage(name, pushState = true) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  window.scrollTo(0, 0);
-  if (name === 'absensi' && !absInited) absInit();
-  if (name === 'output'  && !opjInited) opjInit();
-  if (name === 'issue'   && !diInited)  diInit();
-  if (pushState) history.pushState({ page: name }, '', '#' + name);
+// ─── CONFIG HELPERS ──────────────────────────────────────
+function cfg(id){ return document.getElementById(id).value.trim(); }
+function toggleCfg(){ document.getElementById('cfgPanel').classList.toggle('open'); }
+function toggleFullscreen(){
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+  else document.exitFullscreen();
 }
+document.getElementById('dateNow').textContent = new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
 
-// Tombol Back HP Android
-window.addEventListener('popstate', function(e) {
-  const page = (e.state && e.state.page) ? e.state.page : 'dashboard';
-  showPage(page, false);
-});
+let allData = null;
+let lastSuggest = null;
 
-// Set state awal
-history.replaceState({ page: 'dashboard' }, '', '#dashboard');
-
-/* ============================================================
-   SHARED UTILS
-============================================================ */
-function updateClock() {
-  const n = new Date();
-  const hh = n.getHours().toString().padStart(2,'0');
-  const mm = n.getMinutes().toString().padStart(2,'0');
-  const time = hh + ':' + mm;
-  const days   = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-  const date = days[n.getDay()] + ', ' + n.getDate() + ' ' + months[n.getMonth()] + ' ' + n.getFullYear();
-  ['dash','abs','opj','di'].forEach(p => {
-    const w = document.getElementById(p+'-waktu');
-    const d = document.getElementById(p+'-tgl');
-    if (w) w.textContent = time;
-    if (d) d.textContent = date;
-  });
-}
-updateClock();
-setInterval(updateClock, 30000);
-
-function getTodayFormatted() {
-  const d = new Date();
-  return String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0')+'/'+d.getFullYear();
-}
-
-function showToast(msg, type='') {
-  const t = document.getElementById('global-toast');
-  const icon = type==='success'?'ti-check':type==='error'?'ti-alert-circle':'ti-info-circle';
-  t.className = 'toast ' + type;
-  t.innerHTML = `<i class="ti ${icon}"></i>${msg}`;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3500);
-}
-
-function showLoading(txt='Memuat...') {
-  document.getElementById('global-loading-text').textContent = txt;
-  document.getElementById('global-loading').classList.add('show');
-}
-function hideLoading() {
-  document.getElementById('global-loading').classList.remove('show');
-}
-
-/* ============================================================
-   ABSENSI OPERATOR
-============================================================ */
-const ABS_GAS_READ_URL  = 'https://script.google.com/macros/s/AKfycbxapd8zinjG9FKoDe0-qnVqHb302zkZeP0oHmrtDKMGhOYtafCpOd0wYyZrnrDUNoE/exec';
-const ABS_GAS_WRITE_URL = 'https://script.google.com/macros/s/AKfycbx5fo_27d0xaicSK-3BBGKFkKugmi41x4J05kkbVdBd-iRs6ajzg578HL-I_zByM8A/exec';
-const ABS_MAX_RETRIES = 3, ABS_RETRY_DELAY = 2000, ABS_QUEUE_DELAY = 600;
-const ABS_CACHE_KEY = 'litra_master_db', ABS_CACHE_TTL = 60*60*1000;
-
-let absInited = false, absQueue = [], absIsFlushing = false, absMasterData = [], absOpCount = 0;
-
-function absInit() {
-  absInited = true;
-  absLoadMaster();
-}
-
-function absSetBanner(type, msg) {
-  const b = document.getElementById('abs-status-banner');
-  const t = document.getElementById('abs-banner-text');
-  b.className = 'status-banner show ' + type;
-  t.textContent = msg;
-  if (!msg) b.classList.remove('show');
-}
-
-function absLoadMaster() {
-  try {
-    const raw = localStorage.getItem(ABS_CACHE_KEY);
-    if (raw) {
-      const cache = JSON.parse(raw);
-      if (Date.now() - cache.ts < ABS_CACHE_TTL) {
-        absMasterData = cache.data;
-        absAddOperator();
-        absFetchMaster(false);
-        return;
+// ─── FETCH (paralel) ─────────────────────────────────────
+async function fetchGviz(sheetId, sheetName){
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&headers=1`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status} — ${sheetName}`);
+  const text = await res.text();
+  const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
+  if (!match) throw new Error(`Parse error — ${sheetName}`);
+  const json = JSON.parse(match[1]);
+  if (json.status === 'error') throw new Error(`Google error — ${sheetName}`);
+  if (!json.table || !json.table.cols) throw new Error(`Sheet kosong — ${sheetName}`);
+  const cols = json.table.cols.map(c => c.label || c.id);
+  const colIds = json.table.cols.map(c => c.id); // huruf kolom asli (A, B, C, ...) — dipakai sebagai fallback yang gak tergantung nama header
+  const colTypes = json.table.cols.map(c => c.type);
+  const rows = (json.table.rows || []).map(r => {
+    const obj = {};
+    (r.c || []).forEach((cell, i) => {
+      let val;
+      if (!cell || cell.v === null || cell.v === undefined) { val = ''; }
+      else if (colTypes[i] === 'date' || colTypes[i] === 'datetime') {
+        const dm = String(cell.v).match(/Date\((\d+),(\d+),(\d+)/);
+        val = dm ? new Date(parseInt(dm[1]), parseInt(dm[2]), parseInt(dm[3])) : (cell.f || cell.v);
+      } else {
+        val = (cell.f !== undefined && cell.f !== null) ? cell.f : cell.v;
       }
-    }
-  } catch(e) {}
-  absAddOperator();
-  absFetchMaster(true);
-}
-
-function absFetchMaster(showLoader) {
-  if (showLoader) showLoading('Memuat data operator...');
-  const cbName = '__absGas_' + Date.now();
-  const timer = setTimeout(() => {
-    absCleanup(cbName);
-    if (showLoader) { hideLoading(); showToast('Timeout memuat data','error'); }
-  }, 15000);
-  window[cbName] = function(json) {
-    clearTimeout(timer); absCleanup(cbName);
-    if (showLoader) hideLoading();
-    if (json.status === 'ok' && json.data) {
-      absMasterData = json.data;
-      try { localStorage.setItem(ABS_CACHE_KEY, JSON.stringify({ts:Date.now(),data:absMasterData})); } catch(e) {}
-      if (showLoader) showToast('Data operator dimuat ('+absMasterData.length+')','success');
-    }
-  };
-  const script = document.createElement('script');
-  script.id = 'abs-jsonp-'+cbName;
-  script.src = ABS_GAS_READ_URL + '?callback=' + cbName;
-  script.onerror = () => { clearTimeout(timer); absCleanup(cbName); if (showLoader) { hideLoading(); showToast('Gagal load data operator','error'); } };
-  document.head.appendChild(script);
-}
-
-function absCleanup(cb) {
-  delete window[cb];
-  const s = document.getElementById('abs-jsonp-'+cb);
-  if (s) s.remove();
-}
-
-function absAddOperator() {
-  absOpCount++;
-  const idx = absOpCount;
-  const el = document.createElement('div');
-  el.className = 'operator-card';
-  el.id = 'abs-op-' + idx;
-  el.innerHTML = `
-    <div class="operator-card-header">
-      <span class="op-badge">Operator #${idx}</span>
-      ${idx>1?`<button class="remove-btn" onclick="absRemoveOp(${idx})"><i class="ti ti-trash"></i> Hapus</button>`:''}
-    </div>
-    <div class="operator-card-body">
-      <div class="field">
-        <div class="field-label"><i class="ti ti-user"></i> Nama Operator</div>
-        <div class="ac-wrap">
-          <input type="text" class="field-input" id="abs-nama-${idx}" placeholder="Ketik nama operator..." autocomplete="off"
-            oninput="absOnInput(${idx})" onfocus="absOnInput(${idx})" onblur="absHideAc(${idx})">
-          <div class="ac-drop" id="abs-ac-${idx}"></div>
-        </div>
-      </div>
-      <div class="field">
-        <div class="field-label"><i class="ti ti-id-badge"></i> No. Absen</div>
-        <input type="text" class="field-input readonly" id="abs-absen-${idx}" readonly placeholder="Otomatis terisi">
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <div class="field-label"><i class="ti ti-layout-grid"></i> Line</div>
-          <input type="text" class="field-input readonly" id="abs-line-${idx}" readonly placeholder="—">
-        </div>
-        <div class="field">
-          <div class="field-label"><i class="ti ti-shirt"></i> Style</div>
-          <input type="text" class="field-input readonly" id="abs-style-${idx}" readonly placeholder="—">
-        </div>
-      </div>
-      <div class="field">
-        <div class="field-label"><i class="ti ti-tool"></i> Proses</div>
-        <input type="text" class="field-input readonly" id="abs-proses-${idx}" readonly placeholder="—">
-      </div>
-      <div class="field">
-        <div class="field-label"><i class="ti ti-clipboard-list"></i> Alasan Tidak Masuk</div>
-        <div class="alasan-grid">
-          <button class="alasan-btn" id="abs-al-sakit-${idx}" onclick="absPilihAlasan(${idx},'Sakit')"><i class="ti ti-thermometer"></i> Sakit</button>
-          <button class="alasan-btn" id="abs-al-izin-${idx}"  onclick="absPilihAlasan(${idx},'Izin')"><i class="ti ti-file-text"></i> Izin</button>
-          <button class="alasan-btn" id="abs-al-cuti-${idx}"  onclick="absPilihAlasan(${idx},'Cuti')"><i class="ti ti-beach"></i> Cuti</button>
-          <button class="alasan-btn" id="abs-al-alfa-${idx}"  onclick="absPilihAlasan(${idx},'Alfa')"><i class="ti ti-alert-triangle"></i> Alfa</button>
-        </div>
-      </div>
-    </div>`;
-  document.getElementById('abs-operators-container').appendChild(el);
-  setTimeout(() => el.scrollIntoView({behavior:'smooth',block:'start'}), 80);
-}
-
-function absRemoveOp(idx) {
-  const c = document.getElementById('abs-op-'+idx);
-  if (c) c.remove();
-}
-
-function absOnInput(idx) {
-  const val = (document.getElementById('abs-nama-'+idx).value||'').trim().toLowerCase();
-  const drop = document.getElementById('abs-ac-'+idx);
-  if (!val || !absMasterData.length) { drop.classList.remove('open'); return; }
-  const hits = absMasterData.filter(o => o.nama.toLowerCase().includes(val)).slice(0,8);
-  if (!hits.length) {
-    drop.innerHTML = '<div class="ac-empty">Tidak ditemukan</div>';
-  } else {
-    drop.innerHTML = hits.map(o =>
-      `<div class="ac-item" onmousedown="absPilihOp(${idx},'${absEsc(o.nama)}','${absEsc(o.noAbsen)}','${absEsc(o.line)}','${absEsc(o.style)}','${absEsc(o.proses)}')">
-        <div class="ac-name">${o.nama}</div>
-        <div class="ac-meta">No.${o.noAbsen} · ${o.line} · ${o.proses}</div>
-      </div>`).join('');
-  }
-  drop.classList.add('open');
-}
-
-function absHideAc(idx) {
-  setTimeout(() => { const d = document.getElementById('abs-ac-'+idx); if(d) d.classList.remove('open'); }, 200);
-}
-
-function absPilihOp(idx, nama, absen, line, style, proses) {
-  document.getElementById('abs-nama-'+idx).value   = nama;
-  document.getElementById('abs-absen-'+idx).value  = absen;
-  document.getElementById('abs-line-'+idx).value   = line;
-  document.getElementById('abs-style-'+idx).value  = style;
-  document.getElementById('abs-proses-'+idx).value = proses;
-  document.getElementById('abs-ac-'+idx).classList.remove('open');
-}
-
-function absEsc(s) { return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
-
-function absPilihAlasan(idx, alasan) {
-  const map = {Sakit:'sakit',Izin:'izin',Cuti:'cuti',Alfa:'alfa'};
-  Object.keys(map).forEach(a => {
-    const b = document.getElementById('abs-al-'+a.toLowerCase()+'-'+idx);
-    if (b) b.className = 'alasan-btn';
-  });
-  const btn = document.getElementById('abs-al-'+map[alasan]+'-'+idx);
-  if (btn) btn.classList.add('sel-'+map[alasan]);
-  const card = document.getElementById('abs-op-'+idx);
-  if (card) card.dataset.alasan = alasan;
-}
-
-function absSubmitAll() {
-  const cards = document.querySelectorAll('.operator-card');
-  if (!cards.length) { showToast('Belum ada operator diinput','error'); return; }
-  const now = new Date();
-  const tanggal = (now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getDate().toString().padStart(2,'0')+'/'+now.getFullYear();
-  const jam = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  let valid = true;
-  const newItems = [];
-  cards.forEach(card => {
-    const idx    = card.id.replace('abs-op-','');
-    const nama   = (document.getElementById('abs-nama-'+idx)?.value||'').trim();
-    const absen  = (document.getElementById('abs-absen-'+idx)?.value||'').trim();
-    const line   = (document.getElementById('abs-line-'+idx)?.value||'').trim();
-    const style  = (document.getElementById('abs-style-'+idx)?.value||'').trim();
-    const proses = (document.getElementById('abs-proses-'+idx)?.value||'').trim();
-    const alasan = card.dataset.alasan||'';
-    if (!nama)   { showToast('Nama operator #'+idx+' belum diisi','error'); valid=false; return; }
-    if (!alasan) { showToast('Alasan '+nama+' belum dipilih','error'); valid=false; return; }
-    newItems.push({id:Date.now()+'-'+idx,nama,absen,line,style,proses,alasan,tanggal,jam,status:'pending',retries:0});
-  });
-  if (!valid) return;
-  absQueue.push(...newItems);
-  absRenderQueue();
-  document.getElementById('abs-submit-btn').disabled = true;
-  document.getElementById('abs-add-btn').disabled = true;
-  setTimeout(() => {
-    document.getElementById('abs-operators-container').innerHTML = '';
-    absOpCount = 0;
-    absAddOperator();
-    document.getElementById('abs-submit-btn').disabled = false;
-    document.getElementById('abs-add-btn').disabled = false;
-  }, 800);
-  showToast(newItems.length+' operator masuk antrean pengiriman','info');
-  absFlushQueue();
-}
-
-async function absFlushQueue() {
-  if (absIsFlushing) return;
-  absIsFlushing = true;
-  const pending = absQueue.filter(q => q.status==='pending');
-  if (!pending.length) { absIsFlushing=false; absCheckDone(); return; }
-  absSetBanner('sending','Mengirim data... ('+pending.length+' antrian)');
-  for (const item of pending) {
-    if (item.status !== 'pending') continue;
-    item.status = 'sending';
-    absRenderQueue();
-    const ok = await absSendOne(item);
-    if (ok) {
-      item.status = 'ok';
-    } else {
-      item.retries++;
-      if (item.retries < ABS_MAX_RETRIES) {
-        item.status = 'pending';
-        await absSleep(ABS_RETRY_DELAY);
-        const ok2 = await absSendOne(item);
-        item.status = ok2 ? 'ok' : (item.retries >= ABS_MAX_RETRIES ? 'failed' : 'pending');
-        if (!ok2) item.retries++;
-      } else { item.status = 'failed'; }
-    }
-    absRenderQueue();
-    await absSleep(ABS_QUEUE_DELAY);
-  }
-  absIsFlushing = false;
-  absCheckDone();
-}
-
-async function absSendOne(item) {
-  try {
-    const ctrl = new AbortController();
-    const id = setTimeout(() => ctrl.abort(), 15000);
-    const res = await fetch(ABS_GAS_WRITE_URL, {
-      method:'POST', signal: ctrl.signal,
-      body: JSON.stringify({tanggal:item.tanggal,jam:item.jam,rows:[{nama:item.nama,noAbsen:item.absen,line:item.line,style:item.style,proses:item.proses,alasan:item.alasan}]})
+      obj[cols[i]] = val;
+      if (colIds[i]) obj['_col_'+colIds[i]] = val; // akses aman lewat huruf kolom, terlepas dari nama header
     });
-    clearTimeout(id);
-    const json = await res.json();
-    return json.status === 'ok';
-  } catch(e) { return false; }
-}
-
-function absRetryFailed() {
-  absQueue.filter(q=>q.status==='failed').forEach(q=>{q.status='pending';q.retries=0;});
-  absRenderQueue();
-  document.getElementById('abs-retry-btn').classList.remove('show');
-  absFlushQueue();
-}
-
-function absCheckDone() {
-  const ok = absQueue.filter(q=>q.status==='ok').length;
-  const failed = absQueue.filter(q=>q.status==='failed').length;
-  const pending = absQueue.filter(q=>q.status==='pending'||q.status==='sending').length;
-  if (pending > 0) return;
-  if (failed === 0) {
-    absSetBanner('done','Semua data berhasil terkirim ✓ ('+ok+' operator)');
-    showToast('Semua data absensi terkirim!','success');
-    setTimeout(()=>{absQueue=[];absRenderQueue();absSetBanner('','');},5000);
-  } else {
-    absSetBanner('failed',failed+' data gagal — tap "Kirim ulang"');
-    showToast(failed+' data gagal','error');
-    document.getElementById('abs-retry-btn').classList.add('show');
-  }
-}
-
-function absRenderQueue() {
-  const card = document.getElementById('abs-queue-card');
-  const list = document.getElementById('abs-queue-list');
-  if (!absQueue.length) { card.classList.remove('show'); return; }
-  card.classList.add('show');
-  const statusLabel = {pending:'Menunggu',sending:'Mengirim...',ok:'Terkirim ✓',failed:'Gagal'};
-  const statusClass = {pending:'qi-pending',sending:'qi-sending',ok:'qi-ok',failed:'qi-fail'};
-  list.innerHTML = absQueue.map(q=>
-    `<div class="queue-item"><span class="qi-name">${q.nama}</span><span class="qi-alasan">${q.alasan}</span><span class="qi-status ${statusClass[q.status]}">${statusLabel[q.status]}</span></div>`
-  ).join('');
-}
-
-function absSleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
-
-/* ============================================================
-   OUTPUT PER JAM
-============================================================ */
-const OPJ_SHEET_ID = '1m_OxSQHVUa7IC6r6e_EXGBFj5NBVq67JPDmAPs8HB5E';
-const OPJ_GAS_URL  = 'https://script.google.com/macros/s/AKfycbx5fo_27d0xaicSK-3BBGKFkKugmi41x4J05kkbVdBd-iRs6ajzg578HL-I_zByM8A/exec';
-const OPJ_CACHE_KEY = 'litra_db_v6', OPJ_CACHE_TTL = 60*60*1000;
-
-let opjInited=false, opjAllData=[], opjSelectedLine='', opjSelectedJam=null, opjSpoGroups=[], opjSpoGroupCount=0, opjLineACSetup=false;
-
-function opjInit() {
-  opjInited = true;
-  // Build jam grid
-  const grid = document.getElementById('opj-jam-grid');
-  grid.innerHTML = '';
-  for (let i = 1; i <= 11; i++) {
-    const b = document.createElement('button');
-    b.className = 'jam-btn'; b.textContent = 'Ke-'+i;
-    b.onclick = () => {
-      document.querySelectorAll('#opj-jam-grid .jam-btn').forEach(x=>x.classList.remove('selected'));
-      b.classList.add('selected');
-      opjSelectedJam = i;
-      document.getElementById('opj-jam-error').classList.remove('show');
-      opjUpdatePreview();
-    };
-    grid.appendChild(b);
-  }
-  opjLoadSheetData();
-}
-
-function opjSetBanner(type, msg) {
-  const b = document.getElementById('opj-status-banner');
-  b.className = 'status-banner';
-  if (!type) { b.style.display='none'; return; }
-  b.classList.add('show', type);
-  document.getElementById('opj-banner-text').textContent = msg;
-}
-
-function opjMakeAC(inputId, dropdownId, getOpts, onSelect) {
-  const input = document.getElementById(inputId);
-  const drop  = document.getElementById(dropdownId);
-  if (!input || !drop) return;
-  function show() {
-    const q = input.value.trim().toLowerCase();
-    const opts = getOpts();
-    const filtered = q ? opts.filter(o=>o.toLowerCase().includes(q)) : opts;
-    if (!filtered.length) {
-      drop.innerHTML = '<div class="ac-empty">Tidak ada hasil</div>';
-      drop.classList.toggle('open', q.length>0);
-    } else {
-      drop.innerHTML = filtered.slice(0,40).map(item=>{
-        const hl = q ? item.replace(new RegExp('('+opjEscRe(q)+')','gi'),'<mark>$1</mark>') : item;
-        return '<div class="ac-item">'+hl+'</div>';
-      }).join('');
-      drop.querySelectorAll('.ac-item').forEach((el,i)=>{
-        el.addEventListener('mousedown',e=>{
-          e.preventDefault();
-          input.value = filtered[i];
-          drop.classList.remove('open');
-          onSelect(filtered[i]);
-        });
-      });
-      drop.classList.add('open');
-    }
-  }
-  input.addEventListener('input', show);
-  input.addEventListener('focus', show);
-  document.addEventListener('click', e=>{
-    if (!input.contains(e.target) && !drop.contains(e.target)) drop.classList.remove('open');
-  });
-}
-function opjEscRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
-
-function opjSetupLineAC() {
-  if (opjLineACSetup) return;
-  opjLineACSetup = true;
-  opjMakeAC('opj-line-input','opj-line-dropdown',
-    () => {
-      const lines = [...new Set(opjAllData.map(r=>r.line).filter(Boolean))].sort();
-      const q = document.getElementById('opj-line-input').value.toLowerCase();
-      return q ? lines.filter(l=>l.toLowerCase().includes(q)) : lines;
-    },
-    val => {
-      opjSelectedLine = val;
-      opjSpoGroups = []; opjSpoGroupCount = 0;
-      document.getElementById('opj-spo-groups-container').innerHTML = '';
-      document.getElementById('opj-add-spo-btn').style.display = 'none';
-      document.getElementById('opj-main-input-card').style.display = 'block';
-      opjAddSPOGroup();
-      opjUpdatePreview();
-    }
-  );
-}
-
-function opjAddSPOGroup() {
-  const gid = opjSpoGroupCount++;
-  opjSpoGroups[gid] = {spo:'',style:'',entries:[]};
-  const isFirst = gid === 0;
-  const wrap = document.createElement('div');
-  wrap.id = 'opj-spo-group-'+gid;
-  const sep = !isFirst
-    ? '<div class="divider" style="margin:0 0 14px"></div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#378ADD">SPO '+(gid+1)+'</span><button class="remove-btn" onclick="opjRemoveSPOGroup('+gid+')"><i class="ti ti-x" style="font-size:12px"></i> Hapus SPO</button></div>'
-    : '';
-  wrap.innerHTML = sep +
-    '<div class="field"><div class="field-label"><i class="ti ti-file-text"></i>SPO / Order</div><div class="ac-wrap"><input type="text" id="opj-spo-g'+gid+'" class="field-input" placeholder="Ketik SPO..." autocomplete="off" /><div class="ac-drop" id="opj-spo-drop-g'+gid+'"></div></div></div>' +
-    '<div class="field"><div class="field-label"><i class="ti ti-tag"></i>Style</div><div class="field-filled" id="opj-style-disp-g'+gid+'"><i class="ti ti-info-circle" style="color:#999;font-size:14px"></i><span id="opj-style-txt-g'+gid+'" style="color:#999;font-style:italic;font-size:13px">Terisi otomatis saat SPO dipilih</span></div></div>' +
-    '<div id="opj-entries-g'+gid+'"></div>' +
-    '<button class="add-size-btn" onclick="opjAddSizeToGroup('+gid+')" style="margin-top:8px"><i class="ti ti-plus" style="font-size:14px"></i> Tambah Size</button>';
-  document.getElementById('opj-spo-groups-container').appendChild(wrap);
-  setTimeout(()=>{
-    opjSetupGroupSPOAC(gid);
-    opjAddSizeToGroup(gid);
-    document.getElementById('opj-add-spo-btn').style.display = 'flex';
-  },10);
-  opjUpdatePreview();
-}
-
-function opjRemoveSPOGroup(gid) {
-  const el = document.getElementById('opj-spo-group-'+gid);
-  if (el) el.remove();
-  opjSpoGroups[gid] = null;
-  opjUpdatePreview();
-}
-
-function opjAddSizeToGroup(gid) {
-  const g = opjSpoGroups[gid];
-  if (!g) return;
-  const eid = g.entries.length;
-  g.entries.push({size:'',type:'',qty:''});
-  const removeBtn = eid > 0 ? '<button class="remove-btn" onclick="opjRemoveSizeFromGroup('+gid+','+eid+')" style="margin-left:auto"><i class="ti ti-x" style="font-size:12px"></i> Hapus</button>' : '';
-  const wrap = document.createElement('div');
-  wrap.className = 'extra-entry';
-  wrap.id = 'opj-entry-g'+gid+'-e'+eid;
-  wrap.style.marginBottom = '10px';
-  wrap.innerHTML =
-    '<div class="extra-entry-header" style="margin-bottom:8px"><span class="extra-entry-label">Size '+(eid+1)+'</span>'+removeBtn+'</div>' +
-    '<div class="field" style="margin-bottom:8px"><div class="field-label"><i class="ti ti-ruler"></i>Size</div><div class="ac-wrap"><input type="text" id="opj-size-g'+gid+'-e'+eid+'" class="field-input" placeholder="'+(g.spo?'Pilih size...':'Pilih SPO dulu...')+'" autocomplete="off" style="font-size:13px" '+(g.spo?'':'disabled')+' /><div class="ac-drop" id="opj-size-drop-g'+gid+'-e'+eid+'"></div></div></div>' +
-    '<div class="chip-row" style="margin-bottom:8px"><div class="chip" id="opj-chip-sewing-g'+gid+'-e'+eid+'" onclick="opjSelectChipG('+gid+','+eid+',\'sewing\')"><div class="chip-icon" style="font-size:16px">🧵</div><span class="chip-label" style="font-size:11px">Out Sewing</span></div><div class="chip" id="opj-chip-nologo-g'+gid+'-e'+eid+'" onclick="opjSelectChipG('+gid+','+eid+',\'nologo\')"><div class="chip-icon" style="font-size:16px">📦</div><span class="chip-label" style="font-size:11px">Out No Logo</span></div></div>' +
-    '<div class="number-wrap"><input type="number" id="opj-qty-g'+gid+'-e'+eid+'" class="number-input" placeholder="0" min="0" step="1" inputmode="numeric" data-gid="'+gid+'" data-eid="'+eid+'" oninput="opjSanitizeQtyG(this)" style="font-size:16px" /><span class="unit-label">pcs</span></div>';
-  document.getElementById('opj-entries-g'+gid).appendChild(wrap);
-  if (g.spo) setTimeout(()=>opjSetupSizeAC(gid,eid),10);
-  opjUpdatePreview();
-}
-
-function opjRemoveSizeFromGroup(gid,eid){
-  const el=document.getElementById('opj-entry-g'+gid+'-e'+eid);
-  if(el) el.remove();
-  if(opjSpoGroups[gid]) opjSpoGroups[gid].entries[eid]=null;
-  opjUpdatePreview();
-}
-
-function opjSelectChipG(gid,eid,type){
-  if(!opjSpoGroups[gid]||!opjSpoGroups[gid].entries[eid]) return;
-  opjSpoGroups[gid].entries[eid].type=type;
-  ['sewing','nologo'].forEach(t=>{
-    const el=document.getElementById('opj-chip-'+t+'-g'+gid+'-e'+eid);
-    if(el) el.classList.toggle('selected',t===type);
-  });
-  opjUpdatePreview();
-}
-
-function opjSanitizeQtyG(el){
-  el.value=el.value.replace(/[^0-9]/g,'');
-  const gid=el.dataset.gid; const eid=el.dataset.eid;
-  if(opjSpoGroups[gid]&&opjSpoGroups[gid].entries[eid]) opjSpoGroups[gid].entries[eid].qty=el.value;
-  opjUpdatePreview();
-}
-
-function opjSetupGroupSPOAC(gid){
-  opjMakeAC('opj-spo-g'+gid,'opj-spo-drop-g'+gid,
-    ()=>{
-      const q=(document.getElementById('opj-spo-g'+gid)?.value||'').toLowerCase();
-      const spos=[...new Set(opjAllData.filter(r=>r.line===opjSelectedLine).map(r=>r.spo).filter(Boolean))].sort();
-      return q?spos.filter(s=>s.toLowerCase().includes(q)):spos;
-    },
-    val=>{
-      if(!opjSpoGroups[gid]) return;
-      opjSpoGroups[gid].spo=val;
-      const match=opjAllData.find(r=>(!opjSelectedLine||r.line===opjSelectedLine)&&r.spo===val);
-      opjSpoGroups[gid].style=match?.style||'';
-      const st=document.getElementById('opj-style-txt-g'+gid);
-      if(st){st.textContent=opjSpoGroups[gid].style||'Style tidak ditemukan';st.style.fontStyle=opjSpoGroups[gid].style?'normal':'italic';st.style.color=opjSpoGroups[gid].style?'#0A5C42':'#999';}
-      opjSpoGroups[gid].entries.forEach((e,eid)=>{
-        if(!e) return;
-        const si=document.getElementById('opj-size-g'+gid+'-e'+eid);
-        if(si){si.disabled=false;si.placeholder='Pilih size...';si.value='';}
-        setTimeout(()=>opjSetupSizeAC(gid,eid),10);
-      });
-      opjUpdatePreview();
-    }
-  );
-}
-
-function opjSetupSizeAC(gid,eid){
-  const spo=opjSpoGroups[gid]?.spo;
-  opjMakeAC('opj-size-g'+gid+'-e'+eid,'opj-size-drop-g'+gid+'-e'+eid,
-    ()=>{
-      const q=(document.getElementById('opj-size-g'+gid+'-e'+eid)?.value||'').toLowerCase();
-      if(!opjSelectedLine||!spo) return [];
-      const sizes=[...new Set(opjAllData.filter(r=>r.line===opjSelectedLine&&r.spo===spo).map(r=>r.size).filter(Boolean))].sort();
-      return q?sizes.filter(s=>s.toLowerCase().includes(q)):sizes;
-    },
-    val=>{
-      if(opjSpoGroups[gid]&&opjSpoGroups[gid].entries[eid]) opjSpoGroups[gid].entries[eid].size=val;
-      opjUpdatePreview();
-    }
-  );
-}
-
-function opjCollectRows(){
-  const rows=[];
-  opjSpoGroups.forEach((g,gid)=>{
-    if(!g||!g.spo) return;
-    g.entries.forEach((e,eid)=>{
-      if(!e) return;
-      const qty=document.getElementById('opj-qty-g'+gid+'-e'+eid)?.value||'';
-      if(e.size&&e.type&&qty) rows.push({spo:g.spo,style:g.style,size:e.size,type:e.type,qty});
-    });
-  });
+    return obj;
+  }).filter(r => Object.values(r).some(v => v !== '' && v !== null && v !== undefined));
   return rows;
 }
 
-function opjLoadSheetData(){
-  try{
-    const raw=localStorage.getItem(OPJ_CACHE_KEY);
-    if(raw){
-      const cache=JSON.parse(raw);
-      if(Date.now()-cache.ts<OPJ_CACHE_TTL){opjAllData=cache.rows;opjSetupLineAC();opjFetchJSONP(false);return;}
-    }
-  }catch(e){}
-  opjFetchJSONP(true);
-}
+async function loadAll(){
+  const panel = document.getElementById('mainContent');
+  panel.innerHTML = '<div class="loading-line">Mengambil data dari Google Sheets...</div>';
 
-function opjFetchJSONP(showLoader){
-  if(showLoader) showLoading('Memuat database...');
-  const cbName='__opjCb_'+Date.now();
-  const timer=setTimeout(()=>{opjCleanupJSONP(cbName);if(showLoader){hideLoading();showToast('Timeout — coba refresh.','error');}},15000);
-  window[cbName]=function(json){
-    clearTimeout(timer);opjCleanupJSONP(cbName);
-    if(showLoader) hideLoading();
-    if(json.status==='ok'&&json.rows){
-      opjAllData=json.rows.filter(r=>r.line||r.spo);
-      try{localStorage.setItem(OPJ_CACHE_KEY,JSON.stringify({ts:Date.now(),rows:opjAllData}));}catch(e){}
-      opjSetupLineAC();
-      if(showLoader) showToast('Database dimuat ('+opjAllData.length+' data)','success');
-    } else if(showLoader) showToast('Gagal memuat database.','error');
+  // FIX performa: semua request dijalankan paralel, bukan berurutan
+  const jobs = [
+    fetchGviz(cfg('c-eff'), cfg('c-es')).catch(e => ({__err:e.message, __tag:'Efisiensi'})),
+    fetchGviz(cfg('c-eff'), cfg('c-rs')).catch(e => ({__err:e.message, __tag:'Repair'})),
+    fetchGviz(cfg('c-eff'), cfg('c-opj')).catch(e => ({__err:e.message, __tag:'Output Per Jam'})),
+    fetchGviz(cfg('c-plan'), cfg('c-ps')).catch(e => ({__err:e.message, __tag:'Planning'})),
+    fetchGviz(cfg('c-opid'), cfg('c-opsh')).catch(e => ({__err:e.message, __tag:'Kapasitas Operator'})),
+    fetchGviz(cfg('c-eff'), cfg('c-wip')).catch(e => ({__err:e.message, __tag:'WIP'})),
+  ];
+  const [effRows, repRows, opjRows, planRows, opRows, wipRows] = await Promise.all(jobs);
+
+  const warns = [];
+  [effRows, repRows, opjRows, planRows, opRows, wipRows].forEach(r => { if (r && r.__err) warns.push(`${r.__tag}: ${r.__err}`); });
+
+  allData = {
+    effRows: Array.isArray(effRows) ? effRows : [],
+    repRows: Array.isArray(repRows) ? repRows : [],
+    opjRows: Array.isArray(opjRows) ? opjRows : [],
+    planRows: Array.isArray(planRows) ? planRows : [],
+    opRows: Array.isArray(opRows) ? opRows : [],
+    wipRows: Array.isArray(wipRows) ? wipRows : [],
+    warns
   };
-  const script=document.createElement('script');
-  script.id='opj-jsonp-'+cbName;
-  script.src=OPJ_GAS_URL+'?type=litra&callback='+cbName;
-  script.onerror=()=>{clearTimeout(timer);opjCleanupJSONP(cbName);if(showLoader){hideLoading();showToast('Gagal koneksi ke server.','error');}};
-  document.head.appendChild(script);
+
+  if (allData.effRows.length === 0 && allData.repRows.length === 0) {
+    panel.innerHTML = '<div class="err-box">Data kosong atau gagal dimuat.<br>' + warns.join('<br>') + '</div>';
+    return;
+  }
+
+  document.getElementById('lastUpdate').textContent = 'Update ' + new Date().toLocaleTimeString('id-ID');
+  document.getElementById('footerRows').textContent = `${allData.effRows.length} baris efisiensi · ${allData.repRows.length} baris repair`;
+  lastSuggest = null;
+  renderDaily();
 }
 
-function opjCleanupJSONP(cb){
-  delete window[cb];
-  const el=document.getElementById('opj-jsonp-'+cb);
-  if(el) el.remove();
+// ─── DATE HELPERS ─────────────────────────────────────────
+function sameDay(a,b){ return a instanceof Date && b instanceof Date && a.toDateString() === b.toDateString(); }
+function getYesterday(){ const d = new Date(); d.setDate(d.getDate()-1); return d; }
+function latestDateIn(rows){
+  let max = null;
+  rows.forEach(r => { const t = r['TANGGAL'] || r['Tanggal']; if (t instanceof Date && (!max || t > max)) max = t; });
+  return max;
 }
-
-function opjUpdatePreview(){
-  const card=document.getElementById('opj-preview-card');
-  if(!opjSelectedLine||!opjSelectedJam){card.style.display='none';return;}
-  const validRows=opjCollectRows();
-  if(!validRows.length){card.style.display='none';return;}
-  let html=
-    '<div class="preview-row"><span class="preview-key">Tanggal</span><span class="preview-val">'+getTodayFormatted()+'</span></div>'+
-    '<div class="preview-row"><span class="preview-key">Jam ke-</span><span class="preview-val">'+opjSelectedJam+'</span></div>'+
-    '<div class="preview-row"><span class="preview-key">Line</span><span class="preview-val">'+opjSelectedLine+'</span></div>'+
-    '<div class="divider"></div>';
-  validRows.forEach((r,i)=>{
-    if(i>0) html+='<div class="divider"></div>';
-    html+=
-      '<div class="preview-row"><span class="preview-key">SPO</span><span class="preview-val">'+r.spo+'</span></div>'+
-      '<div class="preview-row"><span class="preview-key">Style</span><span class="preview-val">'+r.style+'</span></div>'+
-      '<div class="preview-row"><span class="preview-key">Size</span><span class="preview-val">'+r.size+'</span></div>'+
-      '<div class="preview-row"><span class="preview-key">Jenis</span><span class="preview-val">'+(r.type==='sewing'?'Out Sewing':'Out No Logo')+'</span></div>'+
-      '<div class="preview-row"><span class="preview-key">Qty</span><span class="preview-val">'+r.qty+' pcs</span></div>';
+function num(v){ const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+function sortByDateDesc(rows){
+  return rows.slice().sort((a,b) => {
+    const da = a['TANGGAL']||a['Tanggal']; const db = b['TANGGAL']||b['Tanggal'];
+    if (!(da instanceof Date) && !(db instanceof Date)) return 0;
+    if (!(da instanceof Date)) return 1;
+    if (!(db instanceof Date)) return -1;
+    return db - da;
   });
-  document.getElementById('opj-preview-content').innerHTML=html;
-  card.style.display='block';
+}
+function pctFrom(v){ // desimal 0-2 => x100, sudah > 2 berarti sudah persen
+  const n = num(v); return n <= 2 ? n*100 : n;
 }
 
-async function opjSubmitData(){
-  if(!opjSelectedLine){showToast('Pilih Line terlebih dahulu.','error');return;}
-  if(!opjSelectedJam){document.getElementById('opj-jam-error').classList.add('show');showToast('Pilih jam terlebih dahulu.','error');return;}
-  const rows=opjCollectRows();
-  if(!rows.length){showToast('Lengkapi SPO, Size, Jenis & Qty.','error');return;}
-  const payload=rows.map(r=>({tanggal:getTodayFormatted(),jamKe:opjSelectedJam,line:opjSelectedLine,spo:r.spo,size:r.size,outSewing:r.type==='sewing'?r.qty:'',outNoLogo:r.type==='nologo'?r.qty:'',style:r.style}));
-  showLoading('Mengirim '+payload.length+' data...');
-  opjSetBanner('info','Mengirim '+payload.length+' data...');
-  let ok=0;
-  try{
-    for(const row of payload){
-      const fd=new FormData();
-      Object.entries({...row,sheetId:OPJ_SHEET_ID}).forEach(([k,v])=>fd.append(k,v));
-      const res=await fetch(OPJ_GAS_URL,{method:'POST',body:fd});
-      const result=await res.json();
-      if(result.status==='ok') ok++;
-      else throw new Error(result.message||'Error');
+const CRITICAL_PROCESS = ['J. IBU JARI JARUM 1','J. IBU JARI JARUM 2','J. MACHI','J. LIPAT','J. PITA LOV'];
+function isCriticalProcess(p){ return CRITICAL_PROCESS.includes(String(p||'').trim().toUpperCase()); }
+
+// ─── DAILY: KLASIFIKASI 4 STATUS ─────────────────────────
+function buildDailyLineData(){
+  const targetDate = getYesterday(); // Daily = strict data hari kemarin, tidak fallback ke tanggal lain
+  const effToday = allData.effRows.filter(r => sameDay(r['TANGGAL']||r['Tanggal'], targetDate));
+  const repToday = allData.repRows.filter(r => sameDay(r['TANGGAL']||r['Tanggal'], targetDate));
+  const opjToday = allData.opjRows.filter(r => sameDay(r['TANGGAL']||r['Tanggal'], targetDate));
+  const opToday = (allData.opRows||[]).filter(r => sameDay(r['TANGGAL']||r['Tanggal'], targetDate));
+  // Kolom WIP diakses lewat huruf kolom (_col_X), bukan nama header — lebih aman karena header persisnya belum dipastikan.
+  // A=Tanggal, B=Line, C=SPV, D=Nilai Max (diabaikan), E=WIP Sew (Pcs), F=Target Line, K=WIP Sew (Hour), L=Status Problem
+  const wipToday = (allData.wipRows||[]).filter(r => sameDay(r['_col_A'], targetDate));
+
+  const lines = {};
+  effToday.forEach(r => {
+    const line = r['LINE']; if (!line) return;
+    lines[line] = lines[line] || { line, spv: r['SPV']||'' };
+    lines[line].eff = pctFrom(r['EFF LINE']);
+  });
+  repToday.forEach(r => {
+    const line = r['LINE']; if (!line) return;
+    lines[line] = lines[line] || { line, spv: r['SPV']||'' };
+    lines[line].repair = pctFrom(r['REPAIR']);
+  });
+  opjToday.forEach(r => {
+    const line = r['LINE']; if (!line) return;
+    lines[line] = lines[line] || { line, spv: r['SPV']||'' };
+    lines[line].opjActual = num(r['Output Per Jam'] ?? r['Output Actual']);
+    lines[line].opjTarget = num(r['Target']);
+  });
+  wipToday.forEach(r => {
+    const line = r['_col_B']; if (!line) return;
+    lines[line] = lines[line] || { line, spv: r['_col_C']||'' };
+    if (!lines[line].spv) lines[line].spv = r['_col_C']||'';
+    lines[line].wipPcs = num(r['_col_E']);
+    lines[line].wipTarget = num(r['_col_F']);
+    lines[line].wipHour = num(r['_col_K']);
+    lines[line].wipStatus = String(r['_col_L']||'').trim().toUpperCase(); // BIG PROBLEM / URGENT / PRIORITAS / AMAN (sudah dihitung di sheet, termasuk kasus WIP kekecilan maupun kebesaran)
+  });
+
+  // Kaitkan data kapasitas operator per line (kemarin, eff=0 diabaikan — kemungkinan absen/belum diinput)
+  Object.values(lines).forEach(l => { l.operators = []; l.hasCriticalProblem = false; });
+  opToday.forEach(r => {
+    const line = r['Line'] || r['LINE']; const effOp = pctFrom(r['Eff']);
+    if (!line || !lines[line] || effOp === 0) return;
+    const proses = r['Proses'] || '';
+    const critical = isCriticalProcess(proses);
+    if (effOp < 100 || critical) {
+      lines[line].operators.push({ nama: r['Nama']||'', proses, eff: effOp, repair: pctFrom(r['Persentase repair']), critical });
+      if (critical && effOp < 100) lines[line].hasCriticalProblem = true;
     }
-    opjSetBanner('done',ok+' data berhasil terkirim ✓');
-    showToast('✓ '+ok+' data berhasil disimpan!','success');
-    opjResetForm();
-    setTimeout(()=>opjSetBanner('',''),5000);
-  }catch(e){
-    opjSetBanner('failed','Sebagian data gagal terkirim');
-    showToast('Gagal mengirim. Coba lagi.','error');
-  } finally { hideLoading(); }
+  });
+
+  return { targetDate, list: Object.values(lines) };
 }
 
-function opjResetForm(){
-  opjSelectedLine='';opjSelectedJam=null;
-  document.getElementById('opj-line-input').value='';
-  document.querySelectorAll('#opj-jam-grid .jam-btn').forEach(b=>b.classList.remove('selected'));
-  document.getElementById('opj-spo-groups-container').innerHTML='';
-  opjSpoGroups=[];opjSpoGroupCount=0;
-  document.getElementById('opj-add-spo-btn').style.display='none';
-  document.getElementById('opj-preview-card').style.display='none';
+const SEVERITY_RANK = { bigproblem: 3, urgent: 2, prioritas: 1, apreciate: 0 };
+function wipSeverity(status){
+  if (status === 'BIG PROBLEM') return 'bigproblem';
+  if (status === 'URGENT') return 'urgent';
+  if (status === 'PRIORITAS') return 'prioritas';
+  if (status === 'AMAN') return 'apreciate';
+  return null; // status WIP tidak diketahui/kosong — tidak ikut memengaruhi klasifikasi
 }
 
-/* ============================================================
-   DAILY ISSUE
-============================================================ */
-const DI_APIKEY_KEY='dip_apikey', DI_GASURL_KEY='dip_gasurl';
-const DI_CACHE_KEY='litra_daily_issue_db', DI_CACHE_TTL=60*60*1000;
-const CLOUDINARY_CLOUD='d79iwwwf', CLOUDINARY_PRESET='litra_asi';
-
-let diInited=false, diMasterItems=[], diSelectedSPO='', diSelectedStyle='', diParsedRows=[];
-let diMediaRec=null, diChunks=[], diRecInterval=null, diRecSecs=0, diIsRec=false;
-let diWaveInterval=null, diRecognition=null, diLiveText='', diFilteredItems=[];
-let diPhotos=[null,null,null], diActiveSlot=0;
-
-function diInit(){
-  diInited=true;
-  const ak=localStorage.getItem(DI_APIKEY_KEY);
-  const gu=localStorage.getItem(DI_GASURL_KEY);
-  if(ak) document.getElementById('di-cfg-apikey').value=ak;
-  if(gu) document.getElementById('di-cfg-gasurl').value=gu;
-  document.getElementById('di-cfg-apikey').addEventListener('change',e=>localStorage.setItem(DI_APIKEY_KEY,e.target.value.trim()));
-  document.getElementById('di-cfg-gasurl').addEventListener('change',e=>localStorage.setItem(DI_GASURL_KEY,e.target.value.trim()));
-  diSetupSPOInput();
-  diLoadMasterList();
+function classifyLine(l){
+  const eff = l.eff ?? null;
+  const repair = l.repair ?? null;
+  const outBelowTarget = (l.opjTarget > 0) ? (l.opjActual < l.opjTarget) : null;
+  if (eff === null || repair === null) return 'unknown';
+  let result;
+  if (eff < 85 && outBelowTarget !== false && repair > 10) result = 'bigproblem';
+  else if (eff < 85 && outBelowTarget !== false && repair > 6) result = 'urgent';
+  else if (eff < 85 && outBelowTarget === false && repair > 6) result = 'prioritas';
+  else result = 'apreciate';
+  // Operator di critical process yang bermasalah selalu wajib minimal urgent
+  if (l.hasCriticalProblem && (result === 'prioritas' || result === 'apreciate')) result = 'urgent';
+  // Status WIP dari sheet (sudah menghitung kasus kekecilan maupun kebesaran) — ambil yang paling parah
+  const wipResult = wipSeverity(l.wipStatus);
+  if (wipResult && SEVERITY_RANK[wipResult] > SEVERITY_RANK[result]) result = wipResult;
+  return result;
 }
 
-function diSetBanner(type,msg){
-  const b=document.getElementById('di-status-banner');
-  b.className='status-banner';
-  if(!type){b.style.display='none';return;}
-  b.classList.add('show',type);
-  document.getElementById('di-banner-text').textContent=msg;
+function renderDaily(){
+  const { targetDate, list } = buildDailyLineData();
+  const buckets = { bigproblem: [], urgent: [], prioritas: [], apreciate: [] };
+  list.forEach(l => { const c = classifyLine(l); if (buckets[c]) buckets[c].push(l); });
+
+  const avg = (arr, key) => arr.length ? (arr.reduce((s,l)=>s+(l[key]||0),0)/arr.length) : null;
+  const effAvg = avg(list.filter(l=>l.eff!=null), 'eff');
+  const repairAvg = avg(list.filter(l=>l.repair!=null), 'repair');
+  const opjList = list.filter(l=>l.opjActual!=null);
+  const opjAvg = avg(opjList, 'opjActual');
+  const wipHourAvg = avg(list.filter(l=>l.wipHour!=null), 'wipHour');
+
+  const dateLabel = targetDate ? targetDate.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}) : '-';
+
+  const statusCol = (key, cls, title, desc) => {
+    const items = buckets[key];
+    const itemsHtml = items.length
+      ? items.map(l => `<div class="status-line-item"><span class="status-line-code">${l.line}</span><div class="status-line-meta">Eff ${l.eff!=null?l.eff.toFixed(0):'-'}% &middot; Repair ${l.repair!=null?l.repair.toFixed(1):'-'}%${l.wipPcs!=null?' &middot; WIP ('+Math.round(l.wipPcs)+' pcs/'+(l.wipHour!=null?l.wipHour.toFixed(1):'-')+' jam)':''}${l.operators&&l.operators.length?' &middot; '+l.operators.length+' operator bermasalah'+(l.hasCriticalProblem?' (proses kritis)':''):''}</div></div>`).join('')
+      : '<div class="status-empty">Tidak ada line</div>';
+    const withWip = items.filter(l => l.wipPcs != null);
+    const wipTop = withWip.length ? withWip.reduce((a,b) => (b.wipPcs > a.wipPcs ? b : a)) : null;
+    return `<div class="status-col ${cls}">
+      <div class="status-col-title">${title} <span class="mono" style="font-size:10px;opacity:.7">(${items.length})</span></div>
+      <div class="status-col-desc">${desc}</div>
+      ${wipTop ? `<div class="status-wip-top">WIP tertinggi: <b>${wipTop.line}</b> &middot; (${Math.round(wipTop.wipPcs)} pcs/${wipTop.wipHour!=null?wipTop.wipHour.toFixed(1):'-'} jam)${wipTop.wipTarget?' / target '+Math.round(wipTop.wipTarget):''}</div>` : ''}
+      ${itemsHtml}
+      <div class="status-suggest" id="suggest-${key}"></div>
+    </div>`;
+  };
+
+  const styleChanges = detectStyleChanges();
+  const spvHelp = buildSpvNeedHelp(list, buckets);
+
+  const html = `
+  ${list.length === 0 ? `<div class="err-box">Belum ada data untuk tanggal kemarin (${dateLabel}). Tab Daily hanya menampilkan data hari kemarin, tidak mundur ke tanggal lain.</div>` : ''}
+  <div class="toolbar">
+    <div class="stat-row">
+      <div class="stat-chip"><div class="stat-chip-label">EFF · RATA KEMARIN</div><div class="stat-chip-value">${effAvg!=null?effAvg.toFixed(0)+'%':'-'}</div></div>
+      <div class="stat-chip"><div class="stat-chip-label">OUT ACTUAL · RATA</div><div class="stat-chip-value">${opjAvg!=null?opjAvg.toFixed(0):'-'}</div></div>
+      <div class="stat-chip"><div class="stat-chip-label">REPAIR · RATA</div><div class="stat-chip-value">${repairAvg!=null?repairAvg.toFixed(1)+'%':'-'}</div></div>
+      <div class="stat-chip"><div class="stat-chip-label">WIP SEW HOUR · RATA</div><div class="stat-chip-value">${wipHourAvg!=null?wipHourAvg.toFixed(1)+' jam':'-'}</div></div>
+      <div class="stat-chip"><div class="stat-chip-label">SHIPMENT · WIP</div><div class="stat-chip-value muted">Data belum ada</div></div>
+      <div class="stat-chip"><div class="stat-chip-label">TANGGAL DATA</div><div class="stat-chip-value" style="font-size:12px">${dateLabel}</div></div>
+    </div>
+    <button class="btn btn-primary" id="genBtn" onclick="generateDailySuggest()">Generate Suggest</button>
+  </div>
+
+  <div class="status-grid">
+    ${statusCol('bigproblem','col-bigproblem','Big problem','Eff di bawah 85, output di bawah target, repair di atas 10 persen')}
+    ${statusCol('urgent','col-urgent','Urgent','Eff di bawah 85, output di bawah target, repair di atas 6 persen')}
+    ${statusCol('prioritas','col-prioritas','Prioritas','Eff di bawah 85, output tercapai, repair di atas 6 persen')}
+    ${statusCol('apreciate','col-apreciate','Apreciate','Eff di atas 85, output tercapai, repair terkendali')}
+  </div>
+
+  <div class="monitor-grid">
+    <div class="monitor-card">
+      <div class="monitor-title">Pergantian style</div>
+      ${styleChanges.length ? styleChanges.map(s=>`<div class="style-change-item"><b>${s.line}</b> &middot; ${s.style} (level ${s.level}) &middot; hari ke-${s.day} (target ${s.targetPct}%)<br>Output ${Math.round(s.actual)} / Target ${Math.round(s.target)}${s.achievedPct!=null?' &middot; capaian '+s.achievedPct+'%':''}</div>`).join('') : '<div class="monitor-body empty">Tidak ada line dengan pergantian style aktif dalam 7 hari terakhir.</div>'}
+      <div class="monitor-suggest" id="suggest-pergantian"></div>
+    </div>
+    <div class="monitor-card">
+      <div class="monitor-title">FIFO SPO <span class="pill-soon">segera</span></div>
+      <div class="monitor-body empty">Data belum tersedia — menunggu koneksi data SPO.</div>
+      <div class="monitor-sub">
+        <div class="monitor-title">Shipment SPO <span class="pill-soon">segera</span></div>
+        <div class="monitor-body empty">Data belum tersedia — menunggu koneksi data shipment.</div>
+      </div>
+    </div>
+    <div class="monitor-card">
+      <div class="monitor-title">SPV need help</div>
+      ${spvHelp.length ? spvHelp.map(s=>`<div class="style-change-item"><b>${s.spv}</b> &middot; ${s.bigproblem} big problem, ${s.urgent} urgent, ${s.prioritas} prioritas</div>`).join('') : '<div class="monitor-body empty">Tidak ada SPV dengan line bermasalah signifikan hari ini.</div>'}
+      <div class="monitor-suggest" id="suggest-spvhelp"></div>
+    </div>
+    <div class="monitor-card">
+      <div class="monitor-title">Outstanding project <span class="pill-soon">segera</span></div>
+      <div class="monitor-body empty">Data belum tersedia — menunggu koneksi MIDI_Projects.</div>
+    </div>
+  </div>
+  `;
+
+  document.getElementById('mainContent').innerHTML = html;
+  window.__dailyBuckets = buckets;
+  window.__dailyStats = { effAvg, repairAvg, opjAvg, dateLabel, styleChanges, spvHelp };
 }
 
-async function diLoadMasterList(){
-  const gasUrl=localStorage.getItem(DI_GASURL_KEY);
-  if(!gasUrl){diSetBanner('info','Isi API Key & Script URL di Konfigurasi');return;}
-  try{
-    const raw=localStorage.getItem(DI_CACHE_KEY);
-    if(raw){
-      const cache=JSON.parse(raw);
-      if(Date.now()-cache.ts<DI_CACHE_TTL){
-        diMasterItems=cache.items;
-        diSetBanner('done','✓ '+diMasterItems.length+' SPO-Style siap');
-        setTimeout(()=>diSetBanner('',''),3000);
-        diFetchAndCache(false,gasUrl);
-        return;
+function getStyleLevel(jenisStyle){
+  const j = String(jenisStyle||'').toLowerCase();
+  if (j.includes('batting') && j.includes('working')) return 4;
+  if (j.includes('batting')) return 3;
+  if (j.includes('working')) return 2;
+  return 1; // default: Golf Glove
+}
+
+function detectStyleChanges(){
+  const yesterday = getYesterday();
+  const windowStart = new Date(yesterday); windowStart.setDate(windowStart.getDate()-6); // window 7 hari termasuk kemarin
+
+  const opjByKey = {};
+  allData.opjRows.forEach(r => {
+    const tgl = r['TANGGAL']||r['Tanggal']; const line = r['LINE'];
+    if (!(tgl instanceof Date) || !line) return;
+    opjByKey[line+'|'+tgl.toDateString()] = { actual: num(r['Output Per Jam'] ?? r['Output Actual']), target: num(r['Target']) };
+  });
+
+  const byLine = {};
+  allData.effRows.forEach(r => {
+    const tgl = r['TANGGAL']||r['Tanggal']; const line = r['LINE'];
+    if (!(tgl instanceof Date) || !line) return;
+    if (tgl < windowStart || tgl > yesterday) return;
+    byLine[line] = byLine[line] || [];
+    const opj = opjByKey[line+'|'+tgl.toDateString()] || {};
+    const statusRaw = String(r['STATUS PERGANTIAN STYLE']||r['Status Pergantian Style']||'').trim().toUpperCase();
+    byLine[line].push({
+      date: tgl, style: r['STYLE']||'', jenisStyle: r['JENIS STYLE']||'',
+      statusPergantian: statusRaw, // "BEDA" = ganti style di baris ini, "SAMA" = lanjut style sebelumnya
+      actual: opj.actual||0, target: opj.target||0
+    });
+  });
+
+  const ramp = [0,40,60,80,100];
+  const result = [];
+  Object.entries(byLine).forEach(([line, entries]) => {
+    entries.sort((a,b)=>a.date-b.date);
+    if (!entries.length) return;
+    const last = entries[entries.length-1];
+    if (!sameDay(last.date, yesterday)) return; // tidak ada data line ini untuk kemarin
+
+    // Hitung "hari ke berapa" dengan jalan mundur dari kemarin: selama baris masih ditandai
+    // SAMA (lanjutan style sebelumnya), terus mundur; berhenti begitu ketemu baris BEDA (hari ke-1).
+    let dayCount = 1;
+    let r = entries.length - 1;
+    while (r > 0 && entries[r].statusPergantian === 'SAMA'){ r--; dayCount++; }
+    if (last.statusPergantian !== 'BEDA' && last.statusPergantian !== 'SAMA') return; // kolom kosong / tidak diketahui, lewati
+    if (dayCount > 4) return; // sudah lewat masa ramp-up, tidak perlu ditandai lagi
+
+    const targetPct = ramp[Math.min(dayCount,4)];
+    const achievedPct = last.target > 0 ? Math.round((last.actual/last.target)*100) : null;
+    result.push({ line, style: last.style, level: getStyleLevel(last.jenisStyle), day: dayCount, targetPct, actual: last.actual, target: last.target, achievedPct });
+  });
+  return result.slice(0,8);
+}
+
+function buildSpvNeedHelp(list, buckets){
+  const bySpv = {};
+  ['bigproblem','urgent','prioritas'].forEach(k => buckets[k].forEach(l => {
+    const spv = l.spv || 'Tanpa SPV';
+    bySpv[spv] = bySpv[spv] || { spv, bigproblem:0, urgent:0, prioritas:0, lines:[] };
+    bySpv[spv][k]++;
+    bySpv[spv].lines.push({ line: l.line, status: k, eff: l.eff, repair: l.repair, operatorBermasalah: (l.operators||[]).length, adaProsesKritis: !!l.hasCriticalProblem });
+  }));
+  return Object.values(bySpv).sort((a,b) => (b.bigproblem*3+b.urgent*2+b.prioritas) - (a.bigproblem*3+a.urgent*2+a.prioritas));
+}
+
+// ─── GENERATE SUGGEST (manual, khusus Daily) ─────────────
+async function generateDailySuggest(){
+  const btn = document.getElementById('genBtn');
+  const slots = { bigproblem: 'suggest-bigproblem', urgent: 'suggest-urgent', prioritas: 'suggest-prioritas', apreciate: 'suggest-apreciate', pergantian: 'suggest-pergantian', spvhelp: 'suggest-spvhelp' };
+  btn.disabled = true; btn.textContent = 'Memproses...';
+  Object.values(slots).forEach(id => {
+    const el = document.getElementById(id);
+    if (el){ el.textContent = 'Menganalisa...'; el.classList.add('loading'); }
+  });
+
+  const b = window.__dailyBuckets || {bigproblem:[],urgent:[],prioritas:[],apreciate:[]};
+  const s = window.__dailyStats || {};
+
+  const opSummary = l => ({ line: l.line, eff: l.eff, repair: l.repair, spv: l.spv, wipPcs: l.wipPcs, wipTarget: l.wipTarget, wipHour: l.wipHour, wipStatus: l.wipStatus, operatorBermasalah: (l.operators||[]).map(o=>({nama:o.nama,proses:o.proses,eff:o.eff,repair:o.repair,critical:o.critical})) });
+  const prompt = `Kamu adalah LITRA-ASI, sistem analisa manufacturing intelligence untuk PT. ASI Divisi Sewing.
+
+DATA HARI INI (${s.dateLabel}) — tiap line disertai wipPcs (WIP dalam pcs), wipTarget, wipHour (WIP dalam jam), wipStatus (status WIP dari sheet: BIG PROBLEM/URGENT/PRIORITAS/AMAN — bisa karena WIP terlalu kecil ATAU terlalu besar), dan daftar operator bermasalah (efisiensi di bawah 100, atau di proses kritis):
+BIG PROBLEM: ${JSON.stringify(b.bigproblem.map(opSummary))}
+URGENT: ${JSON.stringify(b.urgent.map(opSummary))}
+PRIORITAS: ${JSON.stringify(b.prioritas.map(opSummary))}
+APRECIATE: ${JSON.stringify(b.apreciate.map(opSummary))}
+
+LINE DENGAN PERGANTIAN STYLE AKTIF (7 hari terakhir, "day" = hari ke berapa sejak ganti style, "level" = tingkat kesulitan style 1-4 (4 tersulit), "achievedPct" = capaian output aktual dibanding target):
+${JSON.stringify(s.styleChanges||[])}
+
+SPV DENGAN LINE BERMASALAH (bigproblem/urgent/prioritas per SPV, beserta detail line-nya):
+${JSON.stringify((s.spvHelp||[]).map(sp=>({spv:sp.spv,bigproblem:sp.bigproblem,urgent:sp.urgent,prioritas:sp.prioritas,lines:sp.lines})))}
+
+Struktur organisasi: Manager -> Staff Produksi -> SPV -> Leader Line -> Operator.
+Critical process (prioritas tertinggi jika bermasalah): J. Ibu Jari Jarum 1, J. Ibu Jari Jarum 2, J. Machi, J. Lipat, J. Pita Lov.
+
+Buat saran singkat (plain text tanpa markdown atau bullet, angka dalam digit) untuk MASING-MASING kategori berikut:
+
+1. BIG PROBLEM, URGENT, PRIORITAS, APRECIATE — 1-2 kalimat actionable berdasarkan line-line di kategori itu. WAJIB kaitkan dengan data operatorBermasalah jika ada — sebutkan nama proses atau operator jika itu jadi penyebab utama, terutama kalau ada operator di proses kritis. WAJIB juga kaitkan dengan wipStatus jika bermasalah — sebutkan apakah WIP-nya terlalu kecil (risiko line berhenti/starve) atau terlalu besar (risiko bottleneck/menumpuk), sebutkan angka wipPcs vs wipTarget. Kalau kosong tulis "Tidak ada line di kategori ini hari ini". Untuk APRECIATE isi apresiasi singkat, bukan perbaikan.
+2. PERGANTIAN STYLE — dari daftar line yang sedang pergantian style, sebutkan line mana yang capaian outputnya (achievedPct) paling jauh di bawah target ramp-nya dan perlu dipantau lebih ketat, sebutkan angka actual/target-nya. Pertimbangkan juga level kesulitan style (level 3-4 lebih wajar butuh waktu adaptasi, jadi lebih toleran; level 1-2 yang capaiannya rendah lebih perlu perhatian). Kalau tidak ada line pergantian style tulis "Tidak ada line dengan pergantian style aktif hari ini".
+3. SPV NEED HELP — tentukan SPV mana yang PALING butuh bantuan berdasarkan jumlah dan tingkat keparahan line bermasalah, jelaskan alasannya dengan menyebut line dan angka eff/repair spesifik. Kalau tidak ada yang perlu dibantu tulis "Tidak ada SPV yang perlu bantuan khusus hari ini".
+
+Balas PERSIS dengan format ini, satu baris per kategori, tanpa teks lain:
+BIG PROBLEM: [saran]
+URGENT: [saran]
+PRIORITAS: [saran]
+APRECIATE: [saran]
+PERGANTIAN STYLE: [saran]
+SPV NEED HELP: [saran]`;
+
+  try {
+    const res = await fetch('/api/suggest', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    if (data.result) {
+      const text = data.result;
+      const cats = [['bigproblem','BIG PROBLEM'],['urgent','URGENT'],['prioritas','PRIORITAS'],['apreciate','APRECIATE'],['pergantian','PERGANTIAN STYLE'],['spvhelp','SPV NEED HELP']];
+      for (let i=0;i<cats.length;i++){
+        const [key,label] = cats[i];
+        const nextLabel = cats[i+1] ? cats[i+1][1] : null;
+        const start = text.indexOf(label+':');
+        if (start === -1) continue;
+        const end = nextLabel ? text.indexOf(nextLabel+':') : text.length;
+        const chunk = text.slice(start + label.length + 1, end === -1 ? text.length : end).trim();
+        const el = document.getElementById(slots[key]);
+        if (el){ el.textContent = chunk; el.classList.remove('loading'); }
       }
+    } else {
+      Object.values(slots).forEach(id => {
+        const el = document.getElementById(id);
+        if (el){ el.textContent = 'Gagal generate: ' + (data.error||'unknown error'); el.classList.remove('loading'); }
+      });
     }
-  }catch(e){}
-  await diFetchAndCache(true,gasUrl);
-}
-
-async function diFetchAndCache(showLoader,gasUrl){
-  if(showLoader) showLoading('Memuat master list...');
-  try{
-    const data=await new Promise((resolve,reject)=>{
-      const cbName='di_cb_'+Date.now();
-      const script=document.createElement('script');
-      const timer=setTimeout(()=>{delete window[cbName];if(script.parentNode)script.parentNode.removeChild(script);reject(new Error('Timeout'));},15000);
-      window[cbName]=(d)=>{clearTimeout(timer);delete window[cbName];if(script.parentNode)script.parentNode.removeChild(script);resolve(d);};
-      script.src=gasUrl+'?callback='+cbName+'&t='+Date.now();
-      script.onerror=()=>{clearTimeout(timer);reject(new Error('Load error'));};
-      document.body.appendChild(script);
+  } catch(e){
+    Object.values(slots).forEach(id => {
+      const el = document.getElementById(id);
+      if (el){ el.textContent = 'Tidak bisa terhubung ke server.'; el.classList.remove('loading'); }
     });
-    diMasterItems=data.items||[];
-    localStorage.setItem(DI_CACHE_KEY,JSON.stringify({ts:Date.now(),items:diMasterItems}));
-    if(showLoader){hideLoading();diSetBanner('done','✓ Master list: '+diMasterItems.length+' SPO-Style loaded');setTimeout(()=>diSetBanner('',''),4000);}
-  }catch(e){
-    if(showLoader){
-      hideLoading();
-      try{const raw=localStorage.getItem(DI_CACHE_KEY);if(raw){diMasterItems=JSON.parse(raw).items||[];diSetBanner('info','Offline — pakai data tersimpan ('+diMasterItems.length+' SPO-Style)');return;}}catch(e2){}
-      diSetBanner('failed','Gagal load master list. Cek koneksi.');
-    }
   }
+  btn.disabled = false; btn.textContent = 'Generate Suggest';
 }
 
-function diSetupSPOInput(){
-  const input=document.getElementById('di-spo-input');
-  const drop=document.getElementById('di-spo-dropdown');
-  input.addEventListener('input',()=>diRenderSPODrop(input.value));
-  input.addEventListener('focus',()=>diRenderSPODrop(input.value));
-  document.addEventListener('click',e=>{if(!input.contains(e.target)&&!drop.contains(e.target))drop.classList.remove('open');});
-  drop.addEventListener('click',e=>{
-    const item=e.target.closest('[data-idx]');
-    if(!item) return;
-    const idx=parseInt(item.getAttribute('data-idx'));
-    const d=diFilteredItems[idx];
-    if(d) diPilihSPO(d.spo,d.style);
-  });
+// ─── CHAT ─────────────────────────────────────────────────
+let chatOpen = false;
+function toggleChat(){
+  chatOpen = !chatOpen;
+  document.getElementById('chatRoom').style.display = chatOpen ? 'block' : 'none';
+  document.getElementById('chatOpenLabel').innerHTML = chatOpen ? 'Tutup &#9652;' : 'Buka &#9662;';
 }
 
-function diRenderSPODrop(query){
-  const drop=document.getElementById('di-spo-dropdown');
-  if(!diMasterItems.length) return;
-  const q=query.toLowerCase().trim();
-  diFilteredItems=q?diMasterItems.filter(i=>i.spo.toLowerCase().includes(q)||i.style.toLowerCase().includes(q)):diMasterItems;
-  const show=diFilteredItems.slice(0,8);
-  if(!show.length){drop.innerHTML='<div class="ac-empty">SPO tidak ditemukan</div>';drop.classList.add('open');return;}
-  drop.innerHTML=show.map((item,idx)=>{
-    const spoHL=q?item.spo.replace(new RegExp('('+q+')','gi'),'<mark>$1</mark>'):item.spo;
-    return '<div class="ac-item" data-idx="'+idx+'"><span class="ac-spo">'+spoHL+'</span><span class="ac-style">'+item.style+'</span></div>';
-  }).join('');
-  drop.classList.add('open');
-}
-
-function diPilihSPO(spo,style){
-  diSelectedSPO=spo;diSelectedStyle=style;
-  document.getElementById('di-spo-input').value=spo;
-  document.getElementById('di-spo-dropdown').classList.remove('open');
-  const st=document.getElementById('di-style-text');
-  st.textContent=style;st.style.color='#0A5C42';st.style.fontStyle='normal';
-  document.getElementById('di-style-display').querySelector('i').className='ti ti-check';
-  document.getElementById('di-style-display').querySelector('i').style.color='#1D9E75';
-}
-
-const diWaveBars=()=>document.querySelectorAll('#di-wave .wave-bar');
-function diAnimWave(on){
-  clearInterval(diWaveInterval);
-  if(on){diWaveInterval=setInterval(()=>diWaveBars().forEach(b=>b.style.height=(4+Math.random()*24)+'px'),80);}
-  else{const h=[4,8,14,20,24,20,14,8,4,8,16,22,16,10,4];diWaveBars().forEach((b,i)=>b.style.height=(h[i]||6)+'px');}
-}
-function diFmt2(n){return String(n).padStart(2,'0')}
-function diFmtTime(s){return diFmt2(Math.floor(s/60))+':'+diFmt2(s%60)}
-
-async function diToggleRecord(){
-  if(!diIsRec){
-    try{
-      const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-      diChunks=[];diRecSecs=0;
-      diMediaRec=new MediaRecorder(stream);
-      diMediaRec.ondataavailable=e=>diChunks.push(e.data);
-      diMediaRec.onstop=()=>{
-        stream.getTracks().forEach(t=>t.stop());
-        const blob=new Blob(diChunks,{type:'audio/webm'});
-        document.getElementById('di-audio-player').src=URL.createObjectURL(blob);
-        document.getElementById('di-audio-player').style.display='block';
-        document.getElementById('di-rec-btn').className='rec-ring done';
-        document.getElementById('di-rec-icon').textContent='✅';
-        document.getElementById('di-rec-status').textContent='Rekaman selesai. Dengarkan atau lanjut parsing.';
-        diAnimWave(false);
-      };
-      diMediaRec.start();diIsRec=true;
-      document.getElementById('di-rec-btn').className='rec-ring recording';
-      document.getElementById('di-rec-icon').textContent='⏹️';
-      document.getElementById('di-rec-status').textContent='Sedang merekam… tekan lagi untuk berhenti';
-      diAnimWave(true);
-      diRecInterval=setInterval(()=>{diRecSecs++;document.getElementById('di-timer').textContent=diFmtTime(diRecSecs);},1000);
-      diStartLiveSpeech();
-    }catch(e){showToast('Izin mikrofon ditolak','error');}
+function appendMsg(text, isUser){
+  const log = document.getElementById('chatLog');
+  const div = document.createElement('div');
+  if (isUser){
+    div.className = 'msg-user';
+    div.textContent = text;
   } else {
-    diMediaRec.stop();diIsRec=false;
-    clearInterval(diRecInterval);
-    diStopLiveSpeech();
+    div.className = 'msg-bot';
+    div.innerHTML = '<div class="msg-bot-avatar">L</div><div class="msg-bot-bubble"></div>';
+    div.querySelector('.msg-bot-bubble').textContent = text;
   }
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+  return div;
 }
 
-function diStartLiveSpeech(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){diSetStatus('Gunakan mic keyboard untuk transkripsi.');return;}
-  diRecognition=new SR();
-  diRecognition.lang='id-ID';diRecognition.continuous=true;diRecognition.interimResults=true;
-  diLiveText='';
-  diRecognition.onresult=e=>{
-    let interim='';
-    for(let i=e.resultIndex;i<e.results.length;i++){
-      if(e.results[i].isFinal) diLiveText+=e.results[i][0].transcript+' ';
-      else interim+=e.results[i][0].transcript;
-    }
-    document.getElementById('di-transkrip').value=diLiveText+interim;
-  };
-  diRecognition.onerror=()=>{};
-  diRecognition.start();
-  diSetStatus('🔴 Merekam dan mentranskripsi…');
+function askSuggested(text){
+  if (!chatOpen) toggleChat();
+  document.getElementById('chatInput').value = text;
+  sendChat();
 }
 
-function diStopLiveSpeech(){
-  if(diRecognition){try{diRecognition.stop();}catch(e){}}
-  diSetStatus('Transkripsi selesai. Periksa teks lalu tekan Parsing AI.');
-}
+async function sendChat(){
+  const input = document.getElementById('chatInput');
+  const question = input.value.trim();
+  if (!question) return;
+  if (!allData){ appendMsg('Ambil data dulu dari panel konfigurasi sebelum bertanya.', false); return; }
+  appendMsg(question, true);
+  input.value = '';
+  const thinking = appendMsg('Menganalisa...', false);
 
-async function diParseWithAI(){
-  const apiKey=document.getElementById('di-cfg-apikey').value.trim();
-  const transkrip=document.getElementById('di-transkrip').value.trim();
-  if(!apiKey){showToast('Isi API Key dulu di Konfigurasi','error');return;}
-  if(!transkrip){showToast('Transkripsi kosong','error');return;}
-  if(!diSelectedSPO){showToast('Pilih SPO terlebih dahulu','error');return;}
-  document.getElementById('di-btn-parse').disabled=true;
-  showLoading('AI sedang menganalisis…');
-  const today=getTodayFormatted();
-  const prompt=`Kamu adalah sistem ekstraksi data untuk laporan produksi pabrik sepatu/garmen.\n\nDari transkripsi audio berikut, ekstrak data dan kembalikan HANYA JSON array (tanpa penjelasan, tanpa markdown).\n\nPENTING: SPO dan Style sudah dipilih sebelumnya:\n- spo: "${diSelectedSPO}"\n- style: "${diSelectedStyle}"\n\nFormat JSON:\n[{"tanggal":"${today}","divisi":"...","pic":"...","style":"${diSelectedStyle}","issue":"...","size":"...","qty":"...","kategori":"...","operator":"...","spo":"${diSelectedSPO}"}]\n\nTranskripsi:\n"${transkrip}"`;
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+  const effRecent = sortByDateDesc(allData.effRows).slice(0,40);
+  const repRecent = sortByDateDesc(allData.repRows).slice(0,30);
+  const opjRecent = sortByDateDesc(allData.opjRows||[]).slice(0,30);
+  const yesterday = getYesterday();
+  const opYesterday = (allData.opRows||[]).filter(r => sameDay(r['TANGGAL']||r['Tanggal'], yesterday) && pctFrom(r['Eff']) > 0 && pctFrom(r['Eff']) < 100).slice(0,40)
+    .map(r => ({ line: r['Line']||r['LINE'], nama: r['Nama'], proses: r['Proses'], eff: pctFrom(r['Eff']), repair: pctFrom(r['Persentase repair']), critical: isCriticalProcess(r['Proses']) }));
+  const wipYesterday = (allData.wipRows||[]).filter(r => sameDay(r['_col_A'], yesterday))
+    .map(r => ({ line: r['_col_B'], wipPcs: num(r['_col_E']), wipTarget: num(r['_col_F']), wipHour: num(r['_col_K']), status: String(r['_col_L']||'').trim() }));
+  const dStats = window.__dailyStats || {};
+
+  const prompt = `Kamu adalah LITRA-ASI, asisten analisa manufacturing intelligence PT. ASI Divisi Sewing. Jawab pertanyaan user HANYA berdasarkan data berikut, jangan mengarang.
+
+DATA EFISIENSI TERBARU: ${JSON.stringify(effRecent)}
+DATA REPAIR TERBARU: ${JSON.stringify(repRecent)}
+DATA OUTPUT PER JAM TERBARU: ${JSON.stringify(opjRecent)}
+DATA OPERATOR BERMASALAH KEMARIN (efisiensi di bawah 100, "critical":true berarti proses kritis): ${JSON.stringify(opYesterday)}
+DATA WIP KEMARIN PER LINE (wipPcs dalam pcs, wipHour dalam jam, status bisa karena WIP terlalu kecil atau terlalu besar): ${JSON.stringify(wipYesterday)}
+SPV DENGAN LINE BERMASALAH HARI INI: ${JSON.stringify((dStats.spvHelp||[]).map(sp=>({spv:sp.spv,bigproblem:sp.bigproblem,urgent:sp.urgent,prioritas:sp.prioritas})))}
+PERGANTIAN STYLE AKTIF: ${JSON.stringify(dStats.styleChanges||[])}
+
+STRUKTUR ORGANISASI: Manager -> Staff Produksi -> SPV -> Leader Line -> Operator.
+Critical process: J. Ibu Jari Jarum 1, J. Ibu Jari Jarum 2, J. Machi, J. Lipat, J. Pita Lov.
+CATATAN: data FIFO SPO, Shipment SPO, dan Outstanding Project BELUM tersedia di sistem ini. Jika pertanyaan menyangkut itu, jawab jujur bahwa datanya belum tersedia, jangan mengarang.
+
+Jika pertanyaan tentang kondisi atau performa suatu line, WAJIB jawab 5 parameter berurutan: pertama efisiensi dan statusnya, kedua output per jam (actual vs target, tanpa rasio), ketiga repair rate dan statusnya, keempat WIP (pcs dan jam, serta apakah kekecilan atau kebesaran dibanding target), kelima catatan operator — sebutkan nama, proses, efisiensi, dan repair operator di line itu yang bermasalah, terutama di proses kritis, dari DATA OPERATOR BERMASALAH KEMARIN.
+
+Jika pertanyaan tentang SPV mana yang perlu bantuan, jawab berdasarkan SPV DENGAN LINE BERMASALAH HARI INI, sebutkan nama SPV dan jumlah line bermasalahnya.
+
+Pertanyaan: "${question}"
+
+Format jawaban: plain text tanpa markdown, tanpa bullet atau simbol, angka dalam bentuk digit, maksimal 200 kata, bahasa Indonesia percakapan natural.`;
+
+  try {
+    const res = await fetch('/api/suggest', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
     });
-    const data=await res.json();
-    if(data.error) throw new Error(data.error.message);
-    const clean=data.content[0].text.trim().replace(/```json|```/g,'').trim();
-    diParsedRows=JSON.parse(clean);
-    hideLoading();
-    diRenderPreview(diParsedRows);
-    document.getElementById('di-preview-card').style.display='block';
-    document.getElementById('di-btn-kirim').disabled=false;
-    diSetStatus('✅ Parsing selesai! Periksa preview lalu kirim.');
-    showToast('Parsing berhasil!','success');
-    diSetBanner('done','✓ Parsing selesai — '+diParsedRows.length+' baris data');
-    document.getElementById('di-preview-card').scrollIntoView({behavior:'smooth'});
-  }catch(e){
-    hideLoading();
-    diSetStatus('❌ Gagal parsing: '+e.message);
-    showToast('Gagal parsing AI','error');
-    diSetBanner('failed','Parsing gagal: '+e.message);
-  }
-  document.getElementById('di-btn-parse').disabled=false;
-}
-
-function diRenderPreview(rows){
-  if(!rows.length) return;
-  let html='<div class="preview-wrap"><table><thead><tr>';
-  ['Tanggal','Divisi','PIC','Style','Issue','Size','Qty','Kategori','Operator','SPO'].forEach(c=>html+=`<th>${c}</th>`);
-  html+='</tr></thead><tbody>';
-  rows.forEach(r=>{html+=`<tr><td>${r.tanggal}</td><td>${r.divisi}</td><td>${r.pic}</td><td>${r.style}</td><td>${r.issue}</td><td>${r.size}</td><td>${r.qty}</td><td><span class="badge-kategori">${r.kategori}</span></td><td>${r.operator}</td><td>${r.spo}</td></tr>`;});
-  html+='</tbody></table></div>';
-  document.getElementById('di-preview-area').innerHTML=html;
-}
-
-async function diKirimKeSheet(){
-  const gasUrl=document.getElementById('di-cfg-gasurl').value.trim();
-  if(!gasUrl){showToast('Isi Script URL dulu','error');return;}
-  if(!diParsedRows.length){showToast('Tidak ada data','error');return;}
-  const adaFoto=diPhotos.some(p=>p!==null);
-  if(!adaFoto){document.getElementById('di-confirm-overlay').classList.add('show');return;}
-  document.getElementById('di-btn-kirim').disabled=true;
-  try{
-    const fotoObj=await diUploadPhotosToGAS();
-    await diEksekusiKirim(fotoObj);
-  }catch(e){
-    hideLoading();
-    diSetBanner('failed',e.message);
-    showToast('Gagal upload foto','error');
-    document.getElementById('di-btn-kirim').disabled=false;
+    const data = await res.json();
+    thinking.remove();
+    const answer = data.result || ('Maaf, terjadi kesalahan: ' + (data.error||'unknown'));
+    appendMsg(answer, false);
+    if (voiceOn) speak(answer);
+  } catch(e){
+    thinking.remove();
+    appendMsg('Tidak bisa terhubung ke server. Coba lagi.', false);
   }
 }
 
-async function diEksekusiKirim(fotoUrls){
-  const gasUrl=document.getElementById('di-cfg-gasurl').value.trim();
-  document.getElementById('di-btn-kirim').disabled=true;
-  showLoading('Mengirim ke Google Sheet…');
-  diSetBanner('info','Mengirim '+diParsedRows.length+' baris data...');
-  const rowsWithFoto=diParsedRows.map(r=>({...r,foto1:fotoUrls.foto1||'',foto2:fotoUrls.foto2||'',foto3:fotoUrls.foto3||''}));
-  try{
-    await fetch(gasUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({rows:rowsWithFoto})});
-    hideLoading();
-    diSetBanner('done','✓ '+diParsedRows.length+' data berhasil terkirim!');
-    showToast('✓ Data berhasil masuk ke Sheet!','success');
-    diParsedRows=[];
-    setTimeout(()=>{diClearAll();diSetBanner('','');},3000);
-  }catch(e){
-    hideLoading();
-    diSetBanner('failed','Gagal kirim: '+e.message);
-    showToast('Gagal kirim ke Sheet','error');
-    document.getElementById('di-btn-kirim').disabled=false;
-  }
+// ─── VOICE (Web Speech API) ────────────────────────────────
+let voiceOn = false;
+function toggleVoice(){
+  voiceOn = !voiceOn;
+  document.getElementById('voiceToggle').classList.toggle('active', voiceOn);
+  document.getElementById('voiceLabel').textContent = voiceOn ? 'Suara On' : 'Suara Off';
+  document.getElementById('voiceIcon').innerHTML = voiceOn ? '&#128266;' : '&#128263;';
+  if (!voiceOn) window.speechSynthesis && window.speechSynthesis.cancel();
+}
+function speak(text){
+  if (!('speechSynthesis' in window)) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'id-ID';
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
 }
 
-function diTriggerPhoto(slot){
-  if(diPhotos[slot]!==null) return;
-  diActiveSlot=slot;
-  const btnRow=document.getElementById('di-photo-btn-row');
-  btnRow.style.display='flex';
-  [0,1,2].forEach(i=>document.getElementById('di-slot-'+i).style.borderColor=i===slot?'#1D9E75':'');
-}
-function diTutupSlotPicker(){document.getElementById('di-photo-btn-row').style.display='none';[0,1,2].forEach(i=>document.getElementById('di-slot-'+i).style.borderColor='');}
-function diTriggerCamera(){const input=document.getElementById('di-photo-camera');input.value='';input.click();}
-function diTriggerGallery(){const input=document.getElementById('di-photo-gallery');input.value='';input.click();}
-
-function diOnPhotoSelected(e){
-  const file=e.target.files[0];
-  if(!file) return;
-  if(file.size>10*1024*1024){showToast('Ukuran foto maksimal 10MB','error');return;}
-  const reader=new FileReader();
-  reader.onload=(ev)=>{
-    const base64Full=ev.target.result;
-    const base64=base64Full.split(',')[1];
-    const mimeType=file.type;
-    diPhotos[diActiveSlot]={file,base64,mimeType,preview:base64Full};
-    diRenderPhotoSlot(diActiveSlot);
-    diUpdatePhotoCount();
-    diTutupSlotPicker();
+let recognizer = null, micActive = false;
+function toggleMic(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR){ alert('Voice input tidak didukung di browser ini.'); return; }
+  if (micActive){ recognizer && recognizer.stop(); return; }
+  recognizer = new SR();
+  recognizer.lang = 'id-ID';
+  recognizer.interimResults = false;
+  recognizer.onstart = () => { micActive = true; document.getElementById('micBtn').classList.add('listening'); };
+  recognizer.onend = () => { micActive = false; document.getElementById('micBtn').classList.remove('listening'); };
+  recognizer.onresult = (e) => {
+    const text = e.results[0][0].transcript;
+    document.getElementById('chatInput').value = text;
+    sendChat();
   };
-  reader.readAsDataURL(file);
+  recognizer.start();
 }
 
-function diRenderPhotoSlot(idx){
-  const slot=document.getElementById('di-slot-'+idx);
-  const p=diPhotos[idx];
-  if(p){
-    slot.classList.add('filled');slot.style.borderColor='';
-    slot.innerHTML=`<img src="${p.preview}" alt="foto ${idx+1}"><button class="photo-remove" onclick="diRemovePhoto(event,${idx})">✕</button>`;
-    slot.onclick=null;
-  }else{
-    slot.classList.remove('filled');slot.style.borderColor='';
-    slot.innerHTML=`<div class="add-icon">＋</div><div class="add-txt">Foto ${idx+1}</div>`;
-    slot.onclick=()=>diTriggerPhoto(idx);
-  }
-}
-
-function diRemovePhoto(e,idx){e.stopPropagation();diPhotos[idx]=null;diRenderPhotoSlot(idx);diUpdatePhotoCount();diTutupSlotPicker();}
-function diUpdatePhotoCount(){const count=diPhotos.filter(p=>p!==null).length;document.getElementById('di-photo-count').textContent=count+' / 3 foto';}
-
-async function diUploadPhotosToGAS(){
-  const urls=[];
-  const filled=diPhotos.filter(p=>p!==null);
-  for(let i=0;i<filled.length;i++){
-    const p=filled[i];
-    showLoading('Mengupload foto '+(i+1)+' dari '+filled.length+'…');
-    try{const url=await diUploadToCloudinary(p);urls.push(url);}
-    catch(e){throw new Error('Gagal upload foto '+(i+1)+': '+e.message);}
-  }
-  return{foto1:urls[0]||'',foto2:urls[1]||'',foto3:urls[2]||''};
-}
-
-async function diUploadToCloudinary(photo){
-  const formData=new FormData();
-  formData.append('file',`data:${photo.mimeType};base64,${photo.base64}`);
-  formData.append('upload_preset',CLOUDINARY_PRESET);
-  formData.append('folder','daily_issue_produksi');
-  const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:formData});
-  if(!res.ok) throw new Error('HTTP '+res.status);
-  const data=await res.json();
-  if(data.secure_url) return data.secure_url;
-  throw new Error(data.error?.message||'Upload gagal');
-}
-
-function diTutupKonfirmasi(){document.getElementById('di-confirm-overlay').classList.remove('show');}
-async function diLanjutKirimTanpaFoto(){diTutupKonfirmasi();await diEksekusiKirim({foto1:'',foto2:'',foto3:''});}
-
-function diClearAll(){
-  document.getElementById('di-transkrip').value='';
-  document.getElementById('di-timer').textContent='00:00';
-  document.getElementById('di-rec-btn').className='rec-ring';
-  document.getElementById('di-rec-icon').textContent='🎙️';
-  document.getElementById('di-rec-status').textContent='Tekan untuk mulai merekam';
-  document.getElementById('di-audio-player').style.display='none';
-  document.getElementById('di-audio-player').src='';
-  document.getElementById('di-preview-card').style.display='none';
-  document.getElementById('di-preview-area').innerHTML='<div class="empty-state">Belum ada data.</div>';
-  document.getElementById('di-btn-kirim').disabled=true;
-  document.getElementById('di-spo-input').value='';
-  document.getElementById('di-spo-dropdown').classList.remove('open');
-  const st=document.getElementById('di-style-text');
-  st.textContent='Terisi otomatis saat SPO dipilih';st.style.color='#999';st.style.fontStyle='italic';
-  document.getElementById('di-style-display').querySelector('i').className='ti ti-info-circle';
-  document.getElementById('di-style-display').querySelector('i').style.color='#999';
-  diSetBanner('','');
-  diAnimWave(false);
-  diRecSecs=0;diParsedRows=[];diSelectedSPO='';diSelectedStyle='';
-  diPhotos=[null,null,null];
-  [0,1,2].forEach(i=>diRenderPhotoSlot(i));
-  diUpdatePhotoCount();
-}
-
-function diSetStatus(msg){document.getElementById('di-status-bar').textContent=msg;}
+document.addEventListener('fullscreenchange', () => {
+  document.getElementById('fsBtn').innerHTML = document.fullscreenElement ? '&#10005;' : '&#9974;';
+});
 </script>
 </body>
 </html>
