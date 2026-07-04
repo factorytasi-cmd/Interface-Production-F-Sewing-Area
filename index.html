@@ -789,7 +789,7 @@ function absFetchMaster(showLoader) {
   const timer = setTimeout(() => {
     absCleanup(cbName);
     if (showLoader) { hideLoading(); showToast('Timeout memuat data','error'); }
-  }, 15000);
+  }, 30000);
   window[cbName] = function(json) {
     clearTimeout(timer); absCleanup(cbName);
     if (showLoader) hideLoading();
@@ -982,7 +982,7 @@ async function absFlushQueue() {
 async function absSendOne(item) {
   try {
     const ctrl = new AbortController();
-    const id = setTimeout(() => ctrl.abort(), 15000);
+    const id = setTimeout(() => ctrl.abort(), 30000);
     const res = await fetch(ABS_GAS_WRITE_URL, {
       method:'POST', signal: ctrl.signal,
       body: JSON.stringify({tanggal:item.tanggal,jam:item.jam,rows:[{nama:item.nama,noAbsen:item.absen,line:item.line,style:item.style,proses:item.proses,alasan:item.alasan}]})
@@ -1265,7 +1265,7 @@ function opjLoadSheetData(){
 function opjFetchJSONP(showLoader){
   if(showLoader) showLoading('Memuat database...');
   const cbName='__opjCb_'+Date.now();
-  const timer=setTimeout(()=>{opjCleanupJSONP(cbName);if(showLoader){hideLoading();showToast('Timeout — coba refresh.','error');}},15000);
+  const timer=setTimeout(()=>{opjCleanupJSONP(cbName);if(showLoader){hideLoading();showToast('Timeout — coba refresh.','error');}},30000);
   window[cbName]=function(json){
     clearTimeout(timer);opjCleanupJSONP(cbName);
     if(showLoader) hideLoading();
