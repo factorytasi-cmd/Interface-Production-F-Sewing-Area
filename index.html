@@ -1256,31 +1256,60 @@ function opjLoadSheetData(){
     const raw=localStorage.getItem(OPJ_CACHE_KEY);
     if(raw){
       const cache=JSON.parse(raw);
-      if(Date.now()-cache.ts<OPJ_CACHE_TTL){opjAllData=cache.rows;opjSetupLineAC();opjFetchJSONP(false);return;}
+      if(Date.now()-cache.ts<OPJ_CACHE_TTL){
+        opjAllData=cache.rows;
+        opjSetupLineAC();
+        opjFetchData(false); // refresh di background
+        return;
+      }
     }
   }catch(e){}
-  opjFetchJSONP(true);
+  opjFetchData(true);
 }
 
-function opjFetchJSONP(showLoader){
-  if(showLoader) showLoading('Memuat database...');
-  const cbName='__opjCb_'+Date.now();
-  const timer=setTimeout(()=>{opjCleanupJSONP(cbName);if(showLoader){hideLoading();showToast('Timeout — coba refresh.','error');}},30000);
-  window[cbName]=function(json){
-    clearTimeout(timer);opjCleanupJSONP(cbName);
+async function opjFetchData(showLoader, retryCount=0){
+  const MAX_RETRY = 3;
+  if(showLoader) showLoading('Memuat database' + (retryCount > 0 ? ' (percobaan '+(retryCount+1)+')...' : '...'));
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20000);
+    const url = OPJ_GAS_URL + '?type=litra&callback=_opjDirect&t=' + Date.now();
+    const res = await fetch(url, { signal: controller.signal, cache: 'no-store' });
+    clearTimeout(timer);
+    let text = await res.text();
+    // Strip JSONP wrapper jika ada
+    text = text.replace(/^_opjDirect\(/, '').replace(/\);?\s*$/, '').trim();
+    const json = JSON.parse(text);
     if(showLoader) hideLoading();
-    if(json.status==='ok'&&json.rows){
-      opjAllData=json.rows.filter(r=>r.line||r.spo);
-      try{localStorage.setItem(OPJ_CACHE_KEY,JSON.stringify({ts:Date.now(),rows:opjAllData}));}catch(e){}
+    if(json.status==='ok' && json.rows){
+      opjAllData = json.rows.filter(r => r.line || r.spo);
+      try{ localStorage.setItem(OPJ_CACHE_KEY, JSON.stringify({ts:Date.now(), rows:opjAllData})); }catch(e){}
       opjSetupLineAC();
       if(showLoader) showToast('Database dimuat ('+opjAllData.length+' data)','success');
-    } else if(showLoader) showToast('Gagal memuat database.','error');
-  };
-  const script=document.createElement('script');
-  script.id='opj-jsonp-'+cbName;
-  script.src=OPJ_GAS_URL+'?type=litra&callback='+cbName;
-  script.onerror=()=>{clearTimeout(timer);opjCleanupJSONP(cbName);if(showLoader){hideLoading();showToast('Gagal koneksi ke server.','error');}};
-  document.head.appendChild(script);
+    } else {
+      throw new Error('Response tidak valid');
+    }
+  } catch(err) {
+    if(retryCount < MAX_RETRY) {
+      // Retry dengan jeda
+      await new Promise(r => setTimeout(r, 2000));
+      return opjFetchData(showLoader, retryCount + 1);
+    }
+    if(showLoader){
+      hideLoading();
+      // Kalau semua retry gagal, coba pakai cache lama meski expired
+      try{
+        const raw = localStorage.getItem(OPJ_CACHE_KEY);
+        if(raw){
+          opjAllData = JSON.parse(raw).rows || [];
+          opjSetupLineAC();
+          showToast('Pakai data tersimpan — '+opjAllData.length+' data','info');
+          return;
+        }
+      }catch(e2){}
+      showToast('Gagal memuat data. Cek koneksi.','error');
+    }
+  }
 }
 
 function opjCleanupJSONP(cb){
