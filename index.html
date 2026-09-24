@@ -198,6 +198,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .preview-key{color:#999}
 .preview-val{font-weight:600;color:#111;text-align:right;max-width:60%}
 
+/* Rekap Output (hari ini / kemarin) */
+.recap-refresh{margin-left:auto;background:none;border:none;color:#1D9E75;font-size:17px;cursor:pointer;padding:2px;display:flex;align-items:center}
+.recap-refresh.spin i{animation:spin .8s linear infinite}
+.recap-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#F0F2F1;border-radius:12px;padding:4px;margin-bottom:10px}
+.recap-tab{padding:8px;border-radius:9px;border:none;background:none;font-size:12px;font-weight:600;color:#888;cursor:pointer;font-family:inherit}
+.recap-tab.active{background:white;color:#0A5C42;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+.recap-date{font-size:11px;color:#999;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.recap-table{min-width:0;font-size:13px}
+.recap-table th,.recap-table td{padding:8px 10px;text-align:right;font-variant-numeric:tabular-nums}
+.recap-table th:first-child,.recap-table td:first-child{text-align:left}
+.recap-table tfoot td{background:#F7F8F8;font-weight:700;border-top:1px solid #E5E7E6;border-bottom:none}
+.recap-table tfoot tr:first-child td{border-bottom:.5px solid #E5E7E6}
+.gap-pill{display:inline-block;min-width:44px;padding:2px 8px;border-radius:99px;font-weight:700;text-align:center}
+.gap-pill.neg{background:rgba(220,53,69,0.1);color:#B42318}
+.gap-pill.pos{background:rgba(29,158,117,0.12);color:#0A7A55}
+
 /* ===== DAILY ISSUE SPECIFIC ===== */
 .section-divider{display:flex;align-items:center;gap:8px;margin:4px 0 12px}
 .section-divider span{font-size:11px;color:#aaa;white-space:nowrap}
@@ -460,6 +476,20 @@ tr:last-child td{border-bottom:none}
             <div class="ac-drop" id="opj-line-dropdown"></div>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="form-card" id="opj-recap-card" style="display:none">
+      <div class="form-card-header">
+        <div class="card-step-dot"></div>
+        <span class="card-title-text" id="opj-recap-title">Rekap Output</span>
+        <button class="recap-refresh" id="opj-recap-refresh" onclick="opjReloadRecap()" aria-label="Muat ulang rekap"><i class="ti ti-refresh"></i></button>
+      </div>
+      <div class="form-card-body">
+        <div class="recap-tabs">
+          <button class="recap-tab active" id="opj-recap-tab-today" onclick="opjSetRecapTab('today')">Hari Ini</button>
+          <button class="recap-tab" id="opj-recap-tab-kemarin" onclick="opjSetRecapTab('kemarin')">Kemarin</button>
+        </div>
+        <div id="opj-recap-content"></div>
       </div>
     </div>
     <div class="form-card" id="opj-main-input-card">
@@ -1038,6 +1068,7 @@ const OPJ_GAS_URL  = 'https://script.google.com/macros/s/AKfycbx5fo_27d0xaicSK-3
 const OPJ_CACHE_KEY = 'litra_db_v6', OPJ_CACHE_TTL = 60*60*1000;
 
 let opjInited=false, opjAllData=[], opjSelectedLine='', opjSelectedJam=null, opjSpoGroups=[], opjSpoGroupCount=0, opjLineACSetup=false;
+let opjRecapLine='', opjRecapData=null, opjRecapTab='today', opjRecapLoading=false, opjRecapReq=0;
 
 function opjInit() {
   opjInited = true;
@@ -1119,8 +1150,111 @@ function opjSetupLineAC() {
       document.getElementById('opj-main-input-card').style.display = 'block';
       opjAddSPOGroup();
       opjUpdatePreview();
+      opjLoadRecap(val);
     }
   );
+}
+
+/* ---------- Rekap Output (hari ini & hari kerja sebelumnya) ---------- */
+function opjLoadRecap(line) {
+  opjRecapLine = line;
+  opjRecapData = null;
+  opjRecapTab  = 'today';
+  document.getElementById('opj-recap-title').textContent = 'Rekap Output — ' + line;
+  document.getElementById('opj-recap-card').style.display = 'block';
+  opjFetchRecap();
+}
+
+function opjReloadRecap() {
+  if (opjRecapLine) opjFetchRecap();
+}
+
+async function opjFetchRecap() {
+  const req = ++opjRecapReq;
+  const line = opjRecapLine;
+  opjRecapLoading = true;
+  document.getElementById('opj-recap-refresh').classList.add('spin');
+  opjRenderRecap();
+  let errMsg = '';
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 20000);
+    const url = OPJ_GAS_URL + '?type=recap&line=' + encodeURIComponent(line) + '&t=' + Date.now();
+    const res = await fetch(url, { signal: ctrl.signal, cache: 'no-store' });
+    clearTimeout(timer);
+    const json = await res.json();
+    if (json.status !== 'ok') throw new Error(json.message || 'Response tidak valid');
+    if (!json.today) throw new Error('Endpoint rekap belum aktif — deploy ulang GAS');
+    if (req === opjRecapReq) opjRecapData = json;
+  } catch(e) {
+    errMsg = e.name === 'AbortError' ? 'Timeout memuat rekap' : e.message;
+  }
+  if (req !== opjRecapReq) return; // line sudah diganti, abaikan respons lama
+  opjRecapLoading = false;
+  document.getElementById('opj-recap-refresh').classList.remove('spin');
+  if (errMsg) showToast(errMsg, 'error');
+  opjRenderRecap();
+}
+
+function opjSetRecapTab(tab) {
+  opjRecapTab = tab;
+  opjRenderRecap();
+}
+
+function opjRenderRecap() {
+  ['today','kemarin'].forEach(t =>
+    document.getElementById('opj-recap-tab-'+t).classList.toggle('active', t === opjRecapTab));
+  const box = document.getElementById('opj-recap-content');
+
+  if (!opjRecapData) {
+    box.innerHTML = opjRecapLoading
+      ? '<div class="empty-state">Memuat rekap...</div>'
+      : '<div class="empty-state">Gagal memuat rekap.<button class="btn-secondary" onclick="opjReloadRecap()"><i class="ti ti-refresh"></i> Coba lagi</button></div>';
+    return;
+  }
+
+  const day = opjRecapData[opjRecapTab];
+  if (!day) {
+    box.innerHTML = '<div class="empty-state">Belum ada data kemarin (awal minggu)</div>';
+    return;
+  }
+
+  let html = '<div class="recap-date"><i class="ti ti-calendar"></i>' + opjFmtRecapDate(day.tanggal) + '</div>';
+  if (!day.rows.length) {
+    box.innerHTML = html + '<div class="empty-state">Belum ada output ' + (opjRecapTab === 'today' ? 'hari ini' : 'di tanggal ini') + '</div>';
+    return;
+  }
+
+  let sumOut = 0, sumTarget = 0;
+  html += '<div class="preview-wrap"><table class="recap-table"><thead><tr><th>Jam</th><th>Output</th><th>Target</th><th>GAP</th></tr></thead><tbody>';
+  day.rows.forEach(r => {
+    sumOut += r.output; sumTarget += r.target;
+    html += '<tr><td>Ke-' + r.jam + '</td><td>' + opjFmtNum(r.output) + '</td><td>' + opjFmtNum(r.target) + '</td><td>' + opjGapPill(r.output - r.target) + '</td></tr>';
+  });
+  const n = day.rows.length;
+  html += '</tbody><tfoot>' +
+    '<tr><td>Rata²</td><td>' + opjFmtNum(sumOut/n) + '</td><td>' + opjFmtNum(sumTarget/n) + '</td><td>' + opjGapPill((sumOut - sumTarget)/n) + '</td></tr>' +
+    '<tr><td>Total</td><td>' + opjFmtNum(sumOut) + '</td><td>' + opjFmtNum(sumTarget) + '</td><td>' + opjGapPill(sumOut - sumTarget) + '</td></tr>' +
+    '</tfoot></table></div>';
+  box.innerHTML = html;
+}
+
+function opjFmtNum(n) {
+  return (Math.round(n * 10) / 10).toLocaleString('id-ID', { maximumFractionDigits: 1 });
+}
+
+// GAP = Output − Target. Merah jika tekor (< 0), hijau jika 0 atau lebih.
+function opjGapPill(gap) {
+  const g = Math.round(gap * 10) / 10;
+  return '<span class="gap-pill ' + (g < 0 ? 'neg' : 'pos') + '">' + (g > 0 ? '+' : '') + opjFmtNum(g) + '</span>';
+}
+
+function opjFmtRecapDate(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  const days   = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  return days[dt.getDay()] + ', ' + d + ' ' + months[m - 1] + ' ' + y;
 }
 
 function opjAddSPOGroup() {
@@ -1362,6 +1496,7 @@ async function opjSubmitData(){
     opjSetBanner('done',ok+' data berhasil terkirim ✓');
     showToast('✓ '+ok+' data berhasil disimpan!','success');
     opjResetForm();
+    setTimeout(()=>opjReloadRecap(),1500); // rekap tetap tampil untuk line yang barusan dikirim
     setTimeout(()=>opjSetBanner('',''),5000);
   }catch(e){
     opjSetBanner('failed','Sebagian data gagal terkirim');
