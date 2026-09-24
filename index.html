@@ -1215,7 +1215,8 @@ function opjRenderRecap() {
 
   const day = opjRecapData[opjRecapTab];
   if (!day) {
-    box.innerHTML = '<div class="empty-state">Belum ada data kemarin (awal minggu)</div>';
+    const isSenin = new Date().getDay() === 1;
+    box.innerHTML = '<div class="empty-state">' + (isSenin ? 'Belum ada data kemarin (awal minggu)' : 'Belum ada data hari kerja sebelumnya') + '</div>';
     return;
   }
 
