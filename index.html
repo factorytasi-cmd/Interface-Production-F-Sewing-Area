@@ -65,6 +65,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .btn-absen{background:rgba(230,126,34,0.1);color:#7D3A0A;border-color:rgba(230,126,34,0.3)}
 .btn-opj{background:rgba(29,158,117,0.1);color:#0A5C42;border-color:rgba(29,158,117,0.3)}
 .btn-issue{background:rgba(55,138,221,0.1);color:#134E8A;border-color:rgba(55,138,221,0.3)}
+.card-project{background:rgba(142,68,173,0.1);border:.5px solid rgba(142,68,173,0.22) !important}
+.badge-project{background:rgba(142,68,173,0.15);color:#5B2C6F}
+.icon-project{background:rgba(142,68,173,0.15)}
+.btn-project{background:rgba(142,68,173,0.1);color:#5B2C6F;border-color:rgba(142,68,173,0.3)}
 
 /* ===== FOOTER ===== */
 .footer-zone{background:#0A1A1D;padding:16px 18px 28px}
@@ -214,6 +218,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .gap-pill.neg{background:rgba(220,53,69,0.1);color:#B42318}
 .gap-pill.pos{background:rgba(29,158,117,0.12);color:#0A7A55}
 
+/* ===== BONGKARAN & PITA ULANG ===== */
+.bk-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:white;border-radius:14px;padding:4px;margin-bottom:16px;border:.5px solid rgba(0,0,0,0.08);position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.bk-tab{padding:8px 2px;border-radius:10px;border:none;background:none;font-size:11px;font-weight:600;color:#888;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;line-height:1.2}
+.bk-tab i{font-size:17px}
+.bk-tab.active{background:linear-gradient(135deg,#378ADD,#1D9E75);color:white}
+.bk-cnt{display:inline-block;font-size:9px;font-weight:700;background:rgba(220,53,69,0.12);color:#B42318;border-radius:99px;padding:1px 5px;margin-left:2px;vertical-align:1px}
+.bk-cnt:empty{display:none}
+.bk-tab.active .bk-cnt{background:rgba(255,255,255,0.25);color:white}
+.bk-panel{display:none}
+.bk-panel.active{display:block}
+input[type=date].field-input{min-height:46px}
+.bk-scroll{max-height:440px;overflow:auto}
+.bk-scroll thead th{position:sticky;top:0;z-index:1}
+.bk-table{min-width:0;font-size:12px}
+.bk-table th,.bk-table td{padding:9px 8px;vertical-align:middle}
+.bk-table .num{text-align:right;font-variant-numeric:tabular-nums}
+.bk-table .chk{text-align:center;width:44px}
+.bk-table tbody tr{cursor:pointer}
+.bk-table tr.checked td{background:#F0FBF7}
+.bk-table tfoot td{background:#F7F8F8;font-weight:700;border-top:1px solid #E5E7E6;border-bottom:none}
+.bk-bc{font-weight:700;color:#111;word-break:break-all}
+.bk-sub{font-size:11px;color:#999;margin-top:2px}
+.bk-check{width:20px;height:20px;accent-color:#1D9E75;cursor:pointer;vertical-align:middle}
+.bk-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#666;margin:4px 0 10px}
+.bk-toolbar label{display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:500}
+.bk-undo{background:rgba(220,53,69,0.08);border:none;border-radius:8px;color:#dc3545;cursor:pointer;font-size:15px;padding:4px 6px;display:inline-flex}
+
 /* ===== DAILY ISSUE SPECIFIC ===== */
 .section-divider{display:flex;align-items:center;gap:8px;margin:4px 0 12px}
 .section-divider span{font-size:11px;color:#aaa;white-space:nowrap}
@@ -338,6 +369,23 @@ tr:last-child td{border-bottom:none}
           <div class="card-footer">
             <span class="card-hint"><i class="ti ti-clock" style="font-size:13px"></i>Input tiap jam</span>
             <span class="card-btn btn-opj">Buka <i class="ti ti-arrow-right" style="font-size:14px"></i></span>
+          </div>
+        </div>
+      </button>
+
+      <button class="card card-project" onclick="showPage('project')">
+        <div class="card-inner">
+          <div class="card-top">
+            <span class="card-badge badge-project">Khusus</span>
+            <div class="card-icon-wrap icon-project">
+              <i class="ti ti-briefcase" style="font-size:20px;color:#8E44AD"></i>
+            </div>
+          </div>
+          <div class="card-title">Project</div>
+          <div class="card-desc">Kumpulan project khusus produksi, termasuk Bongkaran &amp; Pita Ulang</div>
+          <div class="card-footer">
+            <span class="card-hint"><i class="ti ti-folders" style="font-size:13px"></i>1 project aktif</span>
+            <span class="card-btn btn-project">Buka <i class="ti ti-arrow-right" style="font-size:14px"></i></span>
           </div>
         </div>
       </button>
@@ -520,6 +568,157 @@ tr:last-child td{border-bottom:none}
     <button class="submit-btn" id="opj-submit-btn" onclick="opjSubmitData()">
       <i class="ti ti-send" style="font-size:18px"></i> Kirim Data Output
     </button>
+  </div>
+  <div class="footer-zone">
+    <div class="live-row">
+      <div class="live-dot"></div>
+      <div class="live-txt">Sistem aktif — PT. ASI Sewing Division</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================ -->
+<!-- PAGE: PROJECT -->
+<!-- ================================================ -->
+<div id="page-project" class="page">
+  <div class="back-bar">
+    <button class="back-btn" onclick="showPage('dashboard')">
+      <i class="ti ti-arrow-left" style="font-size:14px"></i> Kembali
+    </button>
+  </div>
+  <div class="header-zone" style="padding-top:12px;padding-bottom:18px">
+    <div class="status-bar">
+      <span>PT. ASI</span>
+      <span id="prj-waktu">--:--</span>
+    </div>
+    <div class="logo-wrap">
+      <div class="logo-box">L</div>
+      <div class="logo-text">LITRA-ASI</div>
+    </div>
+    <div class="tagline">Leading Industrial Transformation</div>
+    <div class="subtitle">Lean Intelligence Tracking &amp; Realtime Analytics — ASI</div>
+    <div class="date-pill">
+      <span><i class="ti ti-calendar" style="font-size:13px"></i><span id="prj-tgl">Memuat...</span></span>
+    </div>
+  </div>
+  <div class="page-title-bar">
+    <h1>PROJECT</h1>
+    <div class="page-divider"></div>
+  </div>
+  <div class="form-content-zone">
+    <div class="section-lbl">Daftar Project</div>
+    <div class="cards">
+      <button class="card card-project" onclick="showPage('bongkaran')">
+        <div class="card-inner">
+          <div class="card-top">
+            <span class="card-badge badge-project">Tracking</span>
+            <div class="card-icon-wrap icon-project">
+              <i class="ti ti-recycle" style="font-size:20px;color:#8E44AD"></i>
+            </div>
+          </div>
+          <div class="card-title">Bongkaran &amp; Pita Ulang</div>
+          <div class="card-desc">Input barang bongkaran, lalu lacak tahap Sudah Bongkar → Sudah Jahit → Out QC</div>
+          <div class="card-footer">
+            <span class="card-hint"><i class="ti ti-list-check" style="font-size:13px"></i>4 tahap</span>
+            <span class="card-btn btn-project">Buka <i class="ti ti-arrow-right" style="font-size:14px"></i></span>
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+  <div class="footer-zone">
+    <div class="live-row">
+      <div class="live-dot"></div>
+      <div class="live-txt">Sistem aktif — PT. ASI Sewing Division</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================ -->
+<!-- PAGE: BONGKARAN & PITA ULANG -->
+<!-- ================================================ -->
+<div id="page-bongkaran" class="page">
+  <div class="back-bar">
+    <button class="back-btn" onclick="showPage('project')">
+      <i class="ti ti-arrow-left" style="font-size:14px"></i> Kembali
+    </button>
+  </div>
+  <div class="header-zone" style="padding-top:12px;padding-bottom:18px">
+    <div class="status-bar">
+      <span>PT. ASI</span>
+      <span id="bk-waktu">--:--</span>
+    </div>
+    <div class="logo-wrap">
+      <div class="logo-box">L</div>
+      <div class="logo-text">LITRA-ASI</div>
+    </div>
+    <div class="tagline">Leading Industrial Transformation</div>
+    <div class="subtitle">Lean Intelligence Tracking &amp; Realtime Analytics — ASI</div>
+    <div class="date-pill">
+      <span><i class="ti ti-calendar" style="font-size:13px"></i><span id="bk-tgl">Memuat...</span></span>
+    </div>
+  </div>
+  <div class="page-title-bar">
+    <h1>BONGKARAN &amp; PITA ULANG</h1>
+    <div class="page-divider"></div>
+  </div>
+  <div class="form-content-zone">
+    <div class="bk-tabs">
+      <button class="bk-tab active" id="bk-tab-input" onclick="bkSetTab('input')"><i class="ti ti-clipboard-plus"></i><span>Input</span></button>
+      <button class="bk-tab" id="bk-tab-bongkar" onclick="bkSetTab('bongkar')"><i class="ti ti-package"></i><span>Bongkar<span class="bk-cnt" id="bk-cnt-bongkar"></span></span></button>
+      <button class="bk-tab" id="bk-tab-jahit" onclick="bkSetTab('jahit')"><i class="ti ti-needle-thread"></i><span>Jahit<span class="bk-cnt" id="bk-cnt-jahit"></span></span></button>
+      <button class="bk-tab" id="bk-tab-qc" onclick="bkSetTab('qc')"><i class="ti ti-circle-check"></i><span>Out QC<span class="bk-cnt" id="bk-cnt-qc"></span></span></button>
+    </div>
+
+    <!-- TAB: INPUT -->
+    <div class="bk-panel active" id="bk-panel-input">
+      <div class="form-card">
+        <div class="form-card-header">
+          <div class="card-step-dot"></div>
+          <span class="card-title-text">Data Bongkaran</span>
+        </div>
+        <div class="form-card-body">
+          <div class="field">
+            <div class="field-label"><i class="ti ti-calendar"></i>Tanggal</div>
+            <input type="date" id="bk-in-tanggal" class="field-input" />
+          </div>
+          <div class="field">
+            <div class="field-label"><i class="ti ti-file-text"></i>SPO / Order</div>
+            <div class="ac-wrap">
+              <input type="text" id="bk-in-spo" class="field-input" placeholder="Ketik SPO..." autocomplete="off" />
+              <div class="ac-drop" id="bk-in-spo-drop"></div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label"><i class="ti ti-tag"></i>Style</div>
+            <div class="field-filled">
+              <span id="bk-in-style-txt" style="color:#999;font-style:italic;font-size:13px">Terisi otomatis saat SPO dipilih</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-card">
+        <div class="form-card-header">
+          <div class="card-step-dot"></div>
+          <span class="card-title-text">Barcode, Size &amp; Qty</span>
+        </div>
+        <div class="form-card-body">
+          <div id="bk-in-entries"></div>
+          <button class="add-size-btn" onclick="bkAddEntry()"><i class="ti ti-plus" style="font-size:14px"></i> Tambah barcode</button>
+        </div>
+      </div>
+      <button class="submit-btn" onclick="bkSubmitInput()">
+        <i class="ti ti-send" style="font-size:18px"></i> Kirim Data Bongkaran
+      </button>
+      <div id="bk-recap-input" style="margin-top:16px"></div>
+    </div>
+
+    <!-- TAB: TAHAP (diisi oleh bkBuildStagePanel) -->
+    <div class="bk-panel" id="bk-panel-bongkar"></div>
+    <div class="bk-panel" id="bk-panel-jahit"></div>
+    <div class="bk-panel" id="bk-panel-qc"></div>
   </div>
   <div class="footer-zone">
     <div class="live-row">
@@ -718,6 +917,7 @@ function showPage(name, pushState = true) {
   if (name === 'absensi' && !absInited) absInit();
   if (name === 'output'  && !opjInited) opjInit();
   if (name === 'issue'   && !diInited)  diInit();
+  if (name === 'bongkaran') { if (!bkInited) bkInit(); else bkLoadData(); }
   if (pushState) history.pushState({ page: name }, '', '#' + name);
 }
 
@@ -741,7 +941,7 @@ function updateClock() {
   const days   = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
   const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
   const date = days[n.getDay()] + ', ' + n.getDate() + ' ' + months[n.getMonth()] + ' ' + n.getFullYear();
-  ['dash','abs','opj','di'].forEach(p => {
+  ['dash','abs','opj','prj','bk','di'].forEach(p => {
     const w = document.getElementById(p+'-waktu');
     const d = document.getElementById(p+'-tgl');
     if (w) w.textContent = time;
@@ -1513,6 +1713,378 @@ function opjResetForm(){
   opjSpoGroups=[];opjSpoGroupCount=0;
   document.getElementById('opj-add-spo-btn').style.display='none';
   document.getElementById('opj-preview-card').style.display='none';
+}
+
+/* ============================================================
+   PROJECT: BONGKARAN & PITA ULANG
+============================================================ */
+const BK_GAS_URL = OPJ_GAS_URL;
+const BK_MASTER_KEY = 'litra_bk_master', BK_MASTER_TTL = 60*60*1000;
+const BK_STAGES = {
+  bongkar: {label:'Sudah Bongkar', prevLabel:'Tgl Input',   prevField:'tanggal', next:'jahit'},
+  jahit:   {label:'Sudah Jahit',   prevLabel:'Tgl Bongkar', prevField:'bongkar', next:'qc'},
+  qc:      {label:'Out QC',        prevLabel:'Tgl Jahit',   prevField:'jahit',   next:null}
+};
+const BK_RECAP_KEYS = ['input','bongkar','jahit','qc'];
+
+let bkInited=false, bkMaster=[], bkCurSpo='', bkData=null, bkDataLoading=false, bkDataReq=0, bkEntrySeq=0;
+let bkSelected = {bongkar:new Set(), jahit:new Set(), qc:new Set()};
+let bkRecapTab = {input:'today', bongkar:'today', jahit:'today', qc:'today'};
+
+function bkEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function bkTodayKey(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function bkFmtShort(k){ if(!k) return '—'; const p=k.split('-'); return p[2]+'/'+p[1]; }
+
+function bkInit(){
+  bkInited = true;
+  document.getElementById('bk-in-tanggal').value = bkTodayKey();
+  Object.keys(BK_STAGES).forEach(bkBuildStagePanel);
+  BK_RECAP_KEYS.forEach(k => document.getElementById('bk-recap-'+k).innerHTML = bkRecapShell(k));
+  bkAddEntry();
+  opjMakeAC('bk-in-spo','bk-in-spo-drop', bkSpoList, bkOnSpoChange);
+  document.getElementById('bk-in-spo').addEventListener('input', bkOnSpoChange);
+  bkLoadMaster();
+  bkLoadData();
+}
+
+function bkSetTab(tab){
+  ['input'].concat(Object.keys(BK_STAGES)).forEach(t=>{
+    document.getElementById('bk-tab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('bk-panel-'+t).classList.toggle('active', t===tab);
+  });
+}
+
+/* ---------- Request ke GAS ---------- */
+async function bkRequest(url, opts){
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), 30000);
+  try{
+    const res = await fetch(url, {...opts, signal:ctrl.signal});
+    const json = await res.json();
+    if(json.status !== 'ok') throw new Error(json.message || 'Response tidak valid');
+    return json;
+  }catch(e){
+    throw e.name==='AbortError' ? new Error('Timeout') : e;
+  }finally{ clearTimeout(timer); }
+}
+function bkGet(type){ return bkRequest(BK_GAS_URL+'?type='+type+'&t='+Date.now(), {cache:'no-store'}); }
+function bkPost(payload){ return bkRequest(BK_GAS_URL, {method:'POST', body:JSON.stringify(payload)}); }
+
+/* ---------- Master DataBase_SPO ---------- */
+function bkLoadMaster(){
+  try{
+    const raw = localStorage.getItem(BK_MASTER_KEY);
+    if(raw){
+      const c = JSON.parse(raw);
+      bkMaster = c.rows || [];
+      if(Date.now()-c.ts < BK_MASTER_TTL){ bkFetchMaster(false); return; }
+    }
+  }catch(e){}
+  bkFetchMaster(true);
+}
+async function bkFetchMaster(notify){
+  try{
+    const json = await bkGet('bk_master');
+    bkMaster = json.rows || [];
+    try{ localStorage.setItem(BK_MASTER_KEY, JSON.stringify({ts:Date.now(), rows:bkMaster})); }catch(e){}
+    if(notify) showToast('DataBase SPO dimuat ('+bkMaster.length+')','success');
+    bkOnSpoChange();
+  }catch(e){
+    if(notify || !bkMaster.length) showToast('Gagal memuat DataBase_SPO','error');
+  }
+}
+function bkSpoList(){ return [...new Set(bkMaster.map(r=>r.spo))].sort(); }
+function bkFindSpo(v){ const q=(v||'').trim().toLowerCase(); return q ? bkMaster.find(r=>r.spo.toLowerCase()===q) || null : null; }
+// Urutan size mengikuti urutan di sheet (S, M, ML, L, ...), tidak di-sort.
+function bkSizesFor(spo){ return [...new Set(bkMaster.filter(r=>r.spo===spo).map(r=>r.size).filter(Boolean))]; }
+
+function bkOnSpoChange(){
+  const m = bkFindSpo(document.getElementById('bk-in-spo').value);
+  const newSpo = m ? m.spo : '';
+  if(newSpo !== bkCurSpo){
+    bkCurSpo = newSpo;
+    document.querySelectorAll('#bk-in-entries .bk-size').forEach(el=>{
+      el.value = '';
+      el.placeholder = bkCurSpo ? 'Pilih size...' : 'Pilih SPO dulu';
+    });
+  }
+  const st = document.getElementById('bk-in-style-txt');
+  st.textContent = m ? (m.style || 'Style kosong di database') : 'Terisi otomatis saat SPO dipilih';
+  st.style.color = m ? '#0A5C42' : '#999';
+  st.style.fontStyle = m ? 'normal' : 'italic';
+}
+
+/* ---------- Tab Input ---------- */
+function bkAddEntry(){
+  const n = ++bkEntrySeq;
+  const box = document.getElementById('bk-in-entries');
+  const first = !box.children.length;
+  const wrap = document.createElement('div');
+  wrap.className = 'extra-entry';
+  wrap.id = 'bk-e-'+n;
+  wrap.style.marginTop = first ? '0' : '10px';
+  wrap.innerHTML =
+    '<div class="extra-entry-header" style="margin-bottom:8px"><span class="extra-entry-label bk-e-label"></span>'+
+      (first ? '' : '<button class="remove-btn" onclick="bkRemoveEntry('+n+')"><i class="ti ti-x" style="font-size:12px"></i> Hapus</button>')+'</div>'+
+    '<div class="field" style="margin-bottom:8px"><div class="field-label"><i class="ti ti-barcode"></i>No. Barcode</div>'+
+      '<input type="text" id="bk-e-bc-'+n+'" class="field-input" placeholder="Ketik no. barcode..." autocomplete="off" style="font-size:13px"></div>'+
+    '<div class="field-row">'+
+      '<div class="field" style="margin-bottom:0"><div class="field-label"><i class="ti ti-ruler"></i>Size</div><div class="ac-wrap">'+
+        '<input type="text" id="bk-e-size-'+n+'" class="field-input bk-size" placeholder="'+(bkCurSpo?'Pilih size...':'Pilih SPO dulu')+'" autocomplete="off" style="font-size:13px">'+
+        '<div class="ac-drop" id="bk-e-size-drop-'+n+'"></div></div></div>'+
+      '<div class="field" style="margin-bottom:0"><div class="field-label"><i class="ti ti-stack-2"></i>Qty</div><div class="number-wrap">'+
+        '<input type="number" id="bk-e-qty-'+n+'" class="number-input" placeholder="0" min="1" step="1" inputmode="numeric" style="font-size:16px" oninput="this.value=this.value.replace(/[^0-9]/g,\'\')">'+
+        '<span class="unit-label">pcs</span></div></div>'+
+    '</div>';
+  box.appendChild(wrap);
+  opjMakeAC('bk-e-size-'+n, 'bk-e-size-drop-'+n, ()=>bkCurSpo ? bkSizesFor(bkCurSpo) : [], ()=>{});
+  bkRenumberEntries();
+}
+function bkRemoveEntry(n){
+  const el = document.getElementById('bk-e-'+n);
+  if(el) el.remove();
+  bkRenumberEntries();
+}
+function bkRenumberEntries(){
+  document.querySelectorAll('#bk-in-entries .bk-e-label').forEach((el,i)=>el.textContent='Barcode '+(i+1));
+}
+
+async function bkSubmitInput(){
+  const tanggal = document.getElementById('bk-in-tanggal').value;
+  const spoVal  = document.getElementById('bk-in-spo').value.trim();
+  if(!tanggal) return showToast('Tanggal wajib diisi','error');
+  if(!spoVal)  return showToast('SPO wajib diisi','error');
+  const m = bkFindSpo(spoVal);
+  if(!m) return showToast('SPO tidak ada di DataBase_SPO','error');
+  const sizes = bkSizesFor(m.spo);
+
+  const rows = [], seen = new Set();
+  const entries = [...document.querySelectorAll('#bk-in-entries .extra-entry')];
+  for(let i=0; i<entries.length; i++){
+    const n = entries[i].id.replace('bk-e-','');
+    const no = i+1;
+    const barcode = document.getElementById('bk-e-bc-'+n).value.trim();
+    let size = document.getElementById('bk-e-size-'+n).value.trim();
+    const qty = Number(document.getElementById('bk-e-qty-'+n).value);
+    if(!barcode) return showToast('No. Barcode #'+no+' wajib diisi','error');
+    if(!size)    return showToast('Size #'+no+' wajib diisi','error');
+    if(!(qty>0)) return showToast('Qty #'+no+' wajib diisi','error');
+    const sizeMatch = sizes.find(s=>s.toLowerCase()===size.toLowerCase());
+    if(sizes.length && !sizeMatch) return showToast('Size '+size+' tidak ada di SPO '+m.spo,'error');
+    if(sizeMatch) size = sizeMatch;
+    if(seen.has(barcode.toLowerCase())) return showToast('Barcode '+barcode+' dobel di form','error');
+    seen.add(barcode.toLowerCase());
+    rows.push({barcode, size, qty});
+  }
+
+  showLoading('Mengirim '+rows.length+' data...');
+  try{
+    await bkPost({type:'bk_input', tanggal, spo:m.spo, style:m.style, rows});
+    showToast('✓ '+rows.length+' data bongkaran tersimpan','success');
+    // Tanggal & SPO dibiarkan, supaya input barcode berikutnya untuk SPO yang sama lebih cepat.
+    document.getElementById('bk-in-entries').innerHTML = '';
+    bkAddEntry();
+    bkRecapTab.input = 'today';
+    bkLoadData();
+  }catch(e){
+    showToast('Gagal kirim: '+e.message,'error');
+  }finally{ hideLoading(); }
+}
+
+/* ---------- Data BONGKARAN (daftar tunggu + rekap) ---------- */
+async function bkLoadData(){
+  const req = ++bkDataReq;
+  bkDataLoading = true;
+  document.querySelectorAll('.bk-refresh').forEach(b=>b.classList.add('spin'));
+  bkRenderAll();
+  let data = null, err = '';
+  try{ data = await bkGet('bk_data'); }catch(e){ err = e.message; }
+  if(req !== bkDataReq) return; // ada request yang lebih baru
+  bkDataLoading = false;
+  document.querySelectorAll('.bk-refresh').forEach(b=>b.classList.remove('spin'));
+  if(data){
+    bkData = data;
+    // Buang pilihan yang sudah tidak ada di daftar tunggu (mis. sudah diisi orang lain)
+    Object.keys(BK_STAGES).forEach(s=>{
+      const ids = new Set(bkData.pending[s].map(r=>r.id));
+      [...bkSelected[s]].forEach(id=>{ if(!ids.has(id)) bkSelected[s].delete(id); });
+    });
+  } else {
+    showToast('Gagal memuat data bongkaran','error');
+    console.warn('bk_data:', err);
+  }
+  bkRenderAll();
+}
+
+function bkRenderAll(){
+  Object.keys(BK_STAGES).forEach(bkRenderStage);
+  BK_RECAP_KEYS.forEach(bkRenderRecap);
+  Object.keys(BK_STAGES).forEach(s=>{
+    document.getElementById('bk-cnt-'+s).textContent = bkData && bkData.pending[s].length ? bkData.pending[s].length : '';
+  });
+}
+
+/* ---------- Tab tahap: Sudah Bongkar / Sudah Jahit / Out QC ---------- */
+function bkBuildStagePanel(s){
+  const st = BK_STAGES[s];
+  document.getElementById('bk-panel-'+s).innerHTML =
+    '<div class="form-card"><div class="form-card-header"><div class="card-step-dot"></div>'+
+      '<span class="card-title-text">Belum '+st.label+'</span>'+
+      '<button class="recap-refresh bk-refresh" onclick="bkLoadData()" aria-label="Muat ulang"><i class="ti ti-refresh"></i></button></div>'+
+    '<div class="form-card-body">'+
+      '<div class="field"><div class="field-label"><i class="ti ti-calendar"></i>Tanggal '+st.label+'</div>'+
+        '<input type="date" id="bk-'+s+'-tanggal" class="field-input"></div>'+
+      '<div class="field"><div class="field-label"><i class="ti ti-search"></i>Cari</div>'+
+        '<input type="search" id="bk-'+s+'-search" class="field-input" placeholder="SPO, barcode, atau size..." autocomplete="off" oninput="bkRenderStage(\''+s+'\')"></div>'+
+      '<div class="bk-toolbar"><label><input type="checkbox" class="bk-check" id="bk-'+s+'-all" onchange="bkToggleAll(\''+s+'\',this.checked)"> Pilih semua</label>'+
+        '<span id="bk-'+s+'-info"></span></div>'+
+      '<div id="bk-'+s+'-list"></div>'+
+    '</div></div>'+
+    '<button class="submit-btn" id="bk-'+s+'-submit" onclick="bkSubmitStage(\''+s+'\')" disabled>'+
+      '<i class="ti ti-send" style="font-size:18px"></i> <span id="bk-'+s+'-submit-txt">Pilih barang dulu</span></button>'+
+    '<div id="bk-recap-'+s+'" style="margin-top:16px"></div>';
+  document.getElementById('bk-'+s+'-tanggal').value = bkTodayKey();
+}
+
+function bkFiltered(s){
+  if(!bkData) return [];
+  const q = (document.getElementById('bk-'+s+'-search').value||'').trim().toLowerCase();
+  const rows = bkData.pending[s];
+  return q ? rows.filter(r=>(r.spo+' '+r.barcode+' '+r.size+' '+r.style).toLowerCase().includes(q)) : rows;
+}
+
+function bkRenderStage(s){
+  const st = BK_STAGES[s], sel = bkSelected[s];
+  const list = document.getElementById('bk-'+s+'-list');
+  if(!bkData){
+    list.innerHTML = bkDataLoading
+      ? '<div class="empty-state">Memuat data...</div>'
+      : '<div class="empty-state">Gagal memuat data.<button class="btn-secondary" onclick="bkLoadData()"><i class="ti ti-refresh"></i> Coba lagi</button></div>';
+    bkUpdateStageInfo(s, []);
+    return;
+  }
+  const rows = bkFiltered(s);
+  if(!bkData.pending[s].length){
+    list.innerHTML = '<div class="empty-state">Tidak ada barang yang menunggu '+st.label.toLowerCase()+'</div>';
+  } else if(!rows.length){
+    list.innerHTML = '<div class="empty-state">Tidak ada yang cocok dengan pencarian</div>';
+  } else {
+    list.innerHTML =
+      '<div class="preview-wrap bk-scroll"><table class="bk-table"><thead><tr><th>Barcode</th><th class="num">Qty</th><th>'+st.prevLabel+'</th><th class="chk">✓</th></tr></thead><tbody>'+
+      rows.map(r=>{
+        const on = sel.has(r.id);
+        return '<tr class="'+(on?'checked':'')+'" onclick="bkToggleRow(\''+s+'\',\''+bkEsc(r.id)+'\',this)">'+
+          '<td><div class="bk-bc">'+bkEsc(r.barcode)+'</div><div class="bk-sub">'+bkEsc(r.spo)+' · '+bkEsc(r.size)+'</div></td>'+
+          '<td class="num">'+r.qty+'</td><td>'+bkFmtShort(r[st.prevField])+'</td>'+
+          '<td class="chk"><input type="checkbox" class="bk-check"'+(on?' checked':'')+'></td></tr>';
+      }).join('')+
+      '</tbody></table></div>';
+  }
+  bkUpdateStageInfo(s, rows);
+}
+
+function bkToggleRow(s, id, tr){
+  const sel = bkSelected[s];
+  if(sel.has(id)) sel.delete(id); else sel.add(id);
+  tr.classList.toggle('checked', sel.has(id));
+  tr.querySelector('input').checked = sel.has(id);
+  bkUpdateStageInfo(s, bkFiltered(s));
+}
+
+function bkToggleAll(s, on){
+  bkFiltered(s).forEach(r=>{ if(on) bkSelected[s].add(r.id); else bkSelected[s].delete(r.id); });
+  bkRenderStage(s);
+}
+
+function bkUpdateStageInfo(s, visibleRows){
+  const sel = bkSelected[s], n = sel.size;
+  let qty = 0;
+  if(bkData) bkData.pending[s].forEach(r=>{ if(sel.has(r.id)) qty += r.qty; });
+  document.getElementById('bk-'+s+'-info').textContent = bkData ? n+' dipilih'+(n?' ('+qty+' pcs)':'')+' · '+bkData.pending[s].length+' menunggu' : '';
+  document.getElementById('bk-'+s+'-all').checked = visibleRows.length>0 && visibleRows.every(r=>sel.has(r.id));
+  document.getElementById('bk-'+s+'-submit').disabled = !n;
+  document.getElementById('bk-'+s+'-submit-txt').textContent = n ? 'Kirim '+BK_STAGES[s].label+' ('+n+')' : 'Pilih barang dulu';
+}
+
+async function bkSubmitStage(s){
+  const st = BK_STAGES[s], ids = [...bkSelected[s]];
+  const tanggal = document.getElementById('bk-'+s+'-tanggal').value;
+  if(!ids.length) return showToast('Pilih barang dulu','error');
+  if(!tanggal)    return showToast('Tanggal '+st.label+' wajib diisi','error');
+  showLoading('Mengirim '+ids.length+' data...');
+  try{
+    const r = await bkPost({type:'bk_stage', stage:s, tanggal, ids});
+    showToast('✓ '+r.updated+' '+st.label.toLowerCase()+(r.skipped?' · '+r.skipped+' dilewati':''), r.skipped?'info':'success');
+    bkSelected[s].clear();
+    document.getElementById('bk-'+s+'-search').value = '';
+    bkRecapTab[s] = 'today';
+    bkLoadData();
+  }catch(e){
+    showToast('Gagal kirim: '+e.message,'error');
+  }finally{ hideLoading(); }
+}
+
+/* ---------- Cek data terkirim (hari ini / kemarin) ---------- */
+function bkRecapShell(k){
+  return '<div class="form-card"><div class="form-card-header"><div class="card-step-dot"></div>'+
+      '<span class="card-title-text">Cek Data Terkirim</span>'+
+      '<button class="recap-refresh bk-refresh" onclick="bkLoadData()" aria-label="Muat ulang"><i class="ti ti-refresh"></i></button></div>'+
+    '<div class="form-card-body"><div class="recap-tabs">'+
+      '<button class="recap-tab" id="bk-rt-'+k+'-today" onclick="bkSetRecapTab(\''+k+'\',\'today\')">Hari Ini</button>'+
+      '<button class="recap-tab" id="bk-rt-'+k+'-kemarin" onclick="bkSetRecapTab(\''+k+'\',\'kemarin\')">Kemarin</button>'+
+    '</div><div id="bk-rc-'+k+'"></div></div></div>';
+}
+
+function bkSetRecapTab(k, tab){
+  bkRecapTab[k] = tab;
+  bkRenderRecap(k);
+}
+
+function bkRenderRecap(k){
+  const tab = bkRecapTab[k];
+  ['today','kemarin'].forEach(t=>document.getElementById('bk-rt-'+k+'-'+t).classList.toggle('active', t===tab));
+  const box = document.getElementById('bk-rc-'+k);
+  if(!bkData){
+    box.innerHTML = '<div class="empty-state">'+(bkDataLoading?'Memuat...':'Data belum termuat.')+'</div>';
+    return;
+  }
+  const day = bkData.recap[k][tab];
+  if(!day){
+    box.innerHTML = '<div class="empty-state">Belum ada data sebelum hari ini</div>';
+    return;
+  }
+  let html = '<div class="recap-date"><i class="ti ti-calendar"></i>'+opjFmtRecapDate(day.tanggal)+'</div>';
+  if(!day.rows.length){
+    box.innerHTML = html+'<div class="empty-state">Belum ada data hari ini</div>';
+    return;
+  }
+  // Batal hanya untuk tahap, hanya di tab Hari Ini, dan hanya jika tahap berikutnya belum diisi.
+  const canUndo = k!=='input' && tab==='today';
+  const next = k!=='input' ? BK_STAGES[k].next : null;
+  let total = 0;
+  html += '<div class="preview-wrap bk-scroll"><table class="bk-table"><thead><tr><th>Barcode</th><th>Size</th><th class="num">Qty</th>'+(canUndo?'<th class="chk"></th>':'')+'</tr></thead><tbody>';
+  day.rows.forEach(r=>{
+    total += r.qty;
+    const undoBtn = canUndo && !(next && r[next])
+      ? '<button class="bk-undo" aria-label="Batalkan" onclick="bkUndo(\''+k+'\',\''+bkEsc(r.id)+'\')"><i class="ti ti-arrow-back-up"></i></button>' : '';
+    html += '<tr style="cursor:default"><td><div class="bk-bc">'+bkEsc(r.barcode)+'</div><div class="bk-sub">'+bkEsc(r.spo)+'</div></td>'+
+      '<td>'+bkEsc(r.size)+'</td><td class="num">'+r.qty+'</td>'+(canUndo?'<td class="chk">'+undoBtn+'</td>':'')+'</tr>';
+  });
+  html += '</tbody><tfoot><tr><td>Total</td><td>'+day.rows.length+' baris</td><td class="num">'+total+'</td>'+(canUndo?'<td></td>':'')+'</tr></tfoot></table></div>';
+  box.innerHTML = html;
+}
+
+async function bkUndo(s, id){
+  const row = bkData.recap[s].today.rows.find(r=>r.id===id);
+  if(!confirm('Batalkan '+BK_STAGES[s].label+' untuk barcode '+(row?row.barcode:id)+'?')) return;
+  showLoading('Membatalkan...');
+  try{
+    await bkPost({type:'bk_undo', stage:s, id});
+    showToast('Dibatalkan','success');
+    bkLoadData();
+  }catch(e){
+    showToast('Gagal batal: '+e.message,'error');
+  }finally{ hideLoading(); }
 }
 
 /* ============================================================
