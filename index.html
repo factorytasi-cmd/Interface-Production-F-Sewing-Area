@@ -236,7 +236,12 @@ input[type=date].field-input{min-height:46px}
 .bk-table .num{text-align:right;font-variant-numeric:tabular-nums}
 .bk-table .chk{text-align:center;width:44px}
 .bk-table tbody tr{cursor:pointer}
+.bk-table tr.dup td{background:rgba(220,53,69,0.07)}
+.bk-table tr.dup .bk-bc{color:#B42318}
 .bk-table tr.checked td{background:#F0FBF7}
+.bk-dup-tag{display:inline-block;font-size:10px;font-weight:700;background:#dc3545;color:white;border-radius:99px;padding:1px 6px;margin-left:4px;vertical-align:1px}
+.bk-dup-btn{margin-top:6px;background:rgba(220,53,69,0.1);color:#B42318;border:none;border-radius:99px;font-size:11px;font-weight:600;padding:4px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-family:inherit}
+.bk-dup-warn{display:flex;align-items:center;gap:6px;background:rgba(220,53,69,0.08);border:.5px solid rgba(220,53,69,0.25);color:#9B1C1C;border-radius:10px;padding:8px 10px;font-size:12px;font-weight:500;margin-bottom:8px}
 .bk-table tfoot td{background:#F7F8F8;font-weight:700;border-top:1px solid #E5E7E6;border-bottom:none}
 .bk-bc{font-weight:700;color:#111;word-break:break-all}
 .bk-sub{font-size:11px;color:#999;margin-top:2px}
@@ -1973,8 +1978,8 @@ function bkRenderStage(s){
       '<div class="preview-wrap bk-scroll"><table class="bk-table"><thead><tr><th>Barcode</th><th class="num">Qty</th><th>'+st.prevLabel+'</th><th class="chk">✓</th></tr></thead><tbody>'+
       rows.map(r=>{
         const on = sel.has(r.id);
-        return '<tr class="'+(on?'checked':'')+'" onclick="bkToggleRow(\''+s+'\',\''+bkEsc(r.id)+'\',this)">'+
-          '<td><div class="bk-bc">'+bkEsc(r.barcode)+'</div><div class="bk-sub">'+bkEsc(r.spo)+' · '+bkEsc(r.size)+'</div></td>'+
+        return '<tr class="'+(on?'checked ':'')+(r.dup>=2?'dup':'')+'" onclick="bkToggleRow(\''+s+'\',\''+bkEsc(r.id)+'\',this)">'+
+          '<td><div class="bk-bc">'+bkEsc(r.barcode)+bkDupTag(r)+'</div><div class="bk-sub">'+bkEsc(r.spo)+' · '+bkEsc(r.size)+'</div></td>'+
           '<td class="num">'+r.qty+'</td><td>'+bkFmtShort(r[st.prevField])+'</td>'+
           '<td class="chk"><input type="checkbox" class="bk-check"'+(on?' checked':'')+'></td></tr>';
       }).join('')+
@@ -2062,16 +2067,48 @@ function bkRenderRecap(k){
   const canUndo = k!=='input' && tab==='today';
   const next = k!=='input' ? BK_STAGES[k].next : null;
   let total = 0;
+  const dupBarcodes = new Set(day.rows.filter(r=>r.dup>=2).map(r=>r.barcode.toLowerCase()));
+  if(dupBarcodes.size) html += '<div class="bk-dup-warn"><i class="ti ti-alert-triangle"></i>'+dupBarcodes.size+' barcode tercatat dobel di sheet</div>';
   html += '<div class="preview-wrap bk-scroll"><table class="bk-table"><thead><tr><th>Barcode</th><th>Size</th><th class="num">Qty</th>'+(canUndo?'<th class="chk"></th>':'')+'</tr></thead><tbody>';
   day.rows.forEach(r=>{
     total += r.qty;
     const undoBtn = canUndo && !(next && r[next])
       ? '<button class="bk-undo" aria-label="Batalkan" onclick="bkUndo(\''+k+'\',\''+bkEsc(r.id)+'\')"><i class="ti ti-arrow-back-up"></i></button>' : '';
-    html += '<tr style="cursor:default"><td><div class="bk-bc">'+bkEsc(r.barcode)+'</div><div class="bk-sub">'+bkEsc(r.spo)+'</div></td>'+
+    const dupBtn = r.dup>=2
+      ? '<button class="bk-dup-btn" onclick="bkDedupe(\''+bkEsc(r.id)+'\')"><i class="ti ti-trash"></i> Hapus dobel</button>' : '';
+    html += '<tr class="'+(r.dup>=2?'dup':'')+'" style="cursor:default"><td><div class="bk-bc">'+bkEsc(r.barcode)+bkDupTag(r)+'</div><div class="bk-sub">'+bkEsc(r.spo)+'</div>'+dupBtn+'</td>'+
       '<td>'+bkEsc(r.size)+'</td><td class="num">'+r.qty+'</td>'+(canUndo?'<td class="chk">'+undoBtn+'</td>':'')+'</tr>';
   });
   html += '</tbody><tfoot><tr><td>Total</td><td>'+day.rows.length+' baris</td><td class="num">'+total+'</td>'+(canUndo?'<td></td>':'')+'</tr></tfoot></table></div>';
   box.innerHTML = html;
+}
+
+function bkDupTag(r){ return r.dup>=2 ? '<span class="bk-dup-tag">'+r.dup+'x</span>' : ''; }
+
+function bkFindRow(id){
+  if(!bkData) return null;
+  const all = Object.values(bkData.pending).flat();
+  Object.values(bkData.recap).forEach(rc=>{ all.push(...rc.today.rows); if(rc.kemarin) all.push(...rc.kemarin.rows); });
+  return all.find(r=>r.id===id) || null;
+}
+
+// Hapus baris dobel (No. Barcode sama) di sheet, sisakan satu. Baris yang disisakan dipilih GAS:
+// yang tahapnya paling jauh; kalau sama, yang paling awal diinput.
+async function bkDedupe(id){
+  const r = bkFindRow(id);
+  if(!r) return;
+  const msg = 'Barcode '+r.barcode+' tercatat '+r.dup+'x di sheet.\n\n'+
+    'Sisakan 1 data (yang tahapnya paling jauh, atau yang paling awal diinput) dan HAPUS '+(r.dup-1)+' baris lainnya?\n\n'+
+    'Baris yang dihapus tidak bisa dikembalikan dari aplikasi.';
+  if(!confirm(msg)) return;
+  showLoading('Menghapus data dobel...');
+  try{
+    const res = await bkPost({type:'bk_dedupe', id});
+    showToast('✓ '+res.removed+' data dobel dihapus','success');
+    bkLoadData();
+  }catch(e){
+    showToast('Gagal hapus: '+e.message,'error');
+  }finally{ hideLoading(); }
 }
 
 async function bkUndo(s, id){
